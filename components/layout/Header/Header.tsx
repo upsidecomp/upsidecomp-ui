@@ -11,6 +11,12 @@ export type HeaderProps = {
 export const Header = (props: HeaderProps) => {
   const [accountAddress, setAccountAddress] = React.useState('')
 
+  const infuraProvider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_JS_INFURA_ID)
+
+  const testQuery = async () => {
+    console.log(await infuraProvider.getBlockNumber())
+  }
+
   const connectButtonOnClick = async () => {
     // @ts-ignore
     if (typeof window.ethereum !== 'undefined') {
@@ -32,6 +38,7 @@ export const Header = (props: HeaderProps) => {
         const address = window.ethereum.selectedAddress
         setAccountAddress(address || '')
       }
+      await testQuery()
     }
     init()
   }, [])
