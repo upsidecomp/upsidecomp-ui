@@ -11,7 +11,8 @@ export type HeaderProps = {
 export const Header = (props: HeaderProps) => {
   const [accountAddress, setAccountAddress] = React.useState('')
 
-  const infuraProvider = new ethers.providers.InfuraProvider("rinkeby", process.env.NEXT_JS_INFURA_ID)
+  const infuraProvider = new ethers.providers.InfuraProvider('rinkeby', process.env.NEXT_JS_INFURA_ID)
+  const bankTokenAddress = '0xd12DAcb1495DE319f5667C218345DCbE54021233'
 
   const testQuery = async () => {
     console.log(await infuraProvider.getBlockNumber())
@@ -37,6 +38,19 @@ export const Header = (props: HeaderProps) => {
         // @ts-ignore
         const address = window.ethereum.selectedAddress
         setAccountAddress(address || '')
+
+        // @ts-ignore
+        const provider = new ethers.providers.Web3Provider(window.ethereum, "any")
+
+        // force refresh page on network change
+        provider.on('network', (newNetwork, oldNetwork) => {
+          // When a Provider makes its initial connection, it emits a "network"
+          // event with a null oldNetwork along with the newNetwork. So, if the
+          // oldNetwork exists, it represents a changing network
+          if (oldNetwork) {
+            window.location.reload()
+          }
+        })
       }
       await testQuery()
     }
