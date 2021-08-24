@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { useState} from "react";
+import { useState,useEffect} from "react";
 import {useSendTransaction} from "./hooks/useSendTransaction"
 import {usePrizePoolContracts} from "./hooks/usePrizePoolContracts"
 import { Button } from 'react-bootstrap'
@@ -13,20 +13,30 @@ const handleDepositSubmit = async (
   usersAddress,
   contractAddress,
   ticketAddress,
-  depositAmountBN
+  depositAmountBN,
+  provider,
 ) => {
   const referrer = ethers.constants.AddressZero // TODO
 
   const params = [usersAddress, depositAmountBN, ticketAddress, referrer]
 
-  await sendTx(setTx, contractAddress, BanklessPrizePoolAbi, 'depositTo', 'Deposit', params)
+  await sendTx(setTx, contractAddress, BanklessPrizePoolAbi, 'depositTo', 'Deposit', params, provider, usersAddress)
 }
 
-export const Deposit = ({ provider, usersAddress }) => {
+export const Deposit = ({ usersAddress }) => {
   const [depositAmount, setDepositAmount] = useState("10")
   const { prizePool: prizePoolAddress, token: { address: prizePoolTokenAddress, symbol: prizePoolTokenSymbol, decimals: prizePoolTokenSymbolDecimals  } } = usePrizePoolContracts()
 
-  const sendTx = useSendTransaction(provider, usersAddress)
+
+  let provider;
+  let sendTx;
+  useEffect(() => {
+    if (typeof window.ethereum !== 'undefined') {
+      provider = new ethers.providers.Web3Provider(window.ethereum, "any")
+    }
+  }, [window.ethereum])
+
+  sendTx = useSendTransaction()
 
   const [tx, setTx] = useState({
     inWallet: false,
@@ -36,14 +46,15 @@ export const Deposit = ({ provider, usersAddress }) => {
 
   const handleSubmit = () => {
     const depositAmountBN = parseNumString(depositAmount, prizePoolTokenSymbolDecimals)
-
+    console.log("providr",provider)
     handleDepositSubmit(
       sendTx,
       setTx,
       usersAddress,
       prizePoolAddress,
       prizePoolTokenAddress,
-      depositAmountBN
+      depositAmountBN,
+      provider,
     )
   }
 

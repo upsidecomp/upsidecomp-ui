@@ -16,11 +16,7 @@ export type HeaderProps = {
 export const Header = (props: HeaderProps) => {
   const [accountAddress, setAccountAddress] = React.useState('')
 
-  const infuraProvider = useProvider()
-
-  const testQuery = async () => {
-    console.log(await infuraProvider.getBlockNumber())
-  }
+  let provider;
 
   const connectButtonOnClick = async () => {
     // @ts-ignore
@@ -28,7 +24,7 @@ export const Header = (props: HeaderProps) => {
       // @ts-ignore
       const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
       // @ts-ignore
-      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      provider = new ethers.providers.Web3Provider(window.ethereum)
       const signer = provider.getSigner()
 
       setAccountAddress(account)
@@ -44,7 +40,7 @@ export const Header = (props: HeaderProps) => {
         setAccountAddress(address || '')
 
         // @ts-ignore
-        const provider = new ethers.providers.Web3Provider(window.ethereum, "any")
+        provider = new ethers.providers.Web3Provider(window.ethereum, "any")
 
         // force refresh page on network change
         provider.on('network', (newNetwork, oldNetwork) => {
@@ -56,10 +52,9 @@ export const Header = (props: HeaderProps) => {
           }
         })
       }
-      await testQuery()
     }
     init()
-  }, [])
+  }, [provider])
 
   return (
     <Navbar bg="light" expand="lg" className={styles.navbarArea}>
@@ -77,7 +72,7 @@ export const Header = (props: HeaderProps) => {
           {accountAddress !== '' && <Navbar.Text>Signed in as: {accountAddress}</Navbar.Text>}
         </Navbar.Collapse>
       </Container>
-      <Deposit usersAddress={accountAddress} provider={infuraProvider} />
+      <Deposit usersAddress={accountAddress} />
     </Navbar>
   )
 }
