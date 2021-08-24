@@ -3,6 +3,11 @@ import * as React from 'react'
 import { Button, Container, Navbar } from 'react-bootstrap'
 
 import styles from './Header.module.scss'
+import { useProvider } from "@components/layout/Interactions/hooks/useProvider"
+
+// todo: remove
+import { Deposit } from "@components/layout/Interactions/Deposit"
+
 
 export type HeaderProps = {
   id?: string
@@ -11,8 +16,7 @@ export type HeaderProps = {
 export const Header = (props: HeaderProps) => {
   const [accountAddress, setAccountAddress] = React.useState('')
 
-  const infuraProvider = new ethers.providers.InfuraProvider('rinkeby', process.env.NEXT_JS_INFURA_ID)
-  const bankTokenAddress = '0xd12DAcb1495DE319f5667C218345DCbE54021233'
+  const infuraProvider = useProvider()
 
   const testQuery = async () => {
     console.log(await infuraProvider.getBlockNumber())
@@ -73,6 +77,7 @@ export const Header = (props: HeaderProps) => {
           {accountAddress !== '' && <Navbar.Text>Signed in as: {accountAddress}</Navbar.Text>}
         </Navbar.Collapse>
       </Container>
+      <Deposit usersAddress={accountAddress} provider={infuraProvider} />
     </Navbar>
   )
 }
