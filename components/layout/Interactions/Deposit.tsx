@@ -25,18 +25,9 @@ const handleDepositSubmit = async (
 
 export const Deposit = ({ usersAddress }) => {
   const [depositAmount, setDepositAmount] = useState("10")
-  const { prizePool: prizePoolAddress, token: { address: prizePoolTokenAddress, symbol: prizePoolTokenSymbol, decimals: prizePoolTokenSymbolDecimals  } } = usePrizePoolContracts()
+  const { prizePool: prizePoolAddress, ticket: { address: prizePoolTicketAddress, symbol: prizePoolTokenSymbol, decimals: prizePoolTokenSymbolDecimals  } } = usePrizePoolContracts()
 
-
-  let provider;
-  let sendTx;
-  useEffect(() => {
-    if (typeof window.ethereum !== 'undefined') {
-      provider = new ethers.providers.Web3Provider(window.ethereum, "any")
-    }
-  }, [window.ethereum])
-
-  sendTx = useSendTransaction()
+  const sendTx = useSendTransaction()
 
   const [tx, setTx] = useState({
     inWallet: false,
@@ -46,16 +37,18 @@ export const Deposit = ({ usersAddress }) => {
 
   const handleSubmit = () => {
     const depositAmountBN = parseNumString(depositAmount, prizePoolTokenSymbolDecimals)
-    console.log("providr",provider)
-    handleDepositSubmit(
-      sendTx,
-      setTx,
-      usersAddress,
-      prizePoolAddress,
-      prizePoolTokenAddress,
-      depositAmountBN,
-      provider,
-    )
+    if (typeof window.ethereum !== 'undefined') {
+      const provider = new ethers.providers.Web3Provider(window.ethereum, "any")
+      handleDepositSubmit(
+        sendTx,
+        setTx,
+        usersAddress,
+        prizePoolAddress,
+        prizePoolTicketAddress,
+        depositAmountBN,
+        provider,
+      )
+    }
   }
 
   return (

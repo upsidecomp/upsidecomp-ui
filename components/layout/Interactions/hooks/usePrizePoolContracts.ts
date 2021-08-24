@@ -11,8 +11,13 @@ export const usePrizePoolContracts = () => {
       decimals: 18
     },
     ticket: {
-      address : "",
+      address : "0x5fCeFF6113aD16625E32954182F87661Cf8b5b8d",
       symbol: "upBANK",
+      decimals: 18
+    },
+    sponsorship: {
+      address : "0xd61dB99A7023Adb9840ca7Ea36FA4B44bA7C90cd",
+      symbol: "upsBANK",
       decimals: 18
     }
   }
