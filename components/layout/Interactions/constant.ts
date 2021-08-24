@@ -8,7 +8,7 @@ export const POOL_ALIASES = {
     alias: 'bankless-test',
     chainId: 4,
     networkName: 'rinkeby',
-    poolAddress: '0x02733EB54EA56bcca58eaF9D962C3773cbF9B466'
+    poolAddress: '0x3fF78cA9Fbaff46C121F5AB40a3F302f26be964D'
   },
 }
 

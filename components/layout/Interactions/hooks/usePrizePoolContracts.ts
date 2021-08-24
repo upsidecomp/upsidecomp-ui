@@ -6,17 +6,17 @@ export const usePrizePoolContracts = () => {
   return {
     prizePool: POOL_ALIASES["bankless-test"].poolAddress,
     token: {
-      address: "0xd12DAcb1495DE319f5667C218345DCbE54021233",
+      address: "0x1cf12dbe0d132eeddac7ce9a0008e0e3362656cf",
       symbol: "BANK",
       decimals: 18
     },
     ticket: {
-      address : "0x5fCeFF6113aD16625E32954182F87661Cf8b5b8d",
+      address : "0x722EfEce1F1FE2de0A2aD0Accbb4AD20390Fe09a",
       symbol: "upBANK",
       decimals: 18
     },
     sponsorship: {
-      address : "0xd61dB99A7023Adb9840ca7Ea36FA4B44bA7C90cd",
+      address : "0x0f930dAFde1F66B6A5a31a76469fa3e348Cf14D8",
       symbol: "upsBANK",
       decimals: 18
     }

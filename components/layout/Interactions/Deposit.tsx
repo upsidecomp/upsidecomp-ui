@@ -19,12 +19,14 @@ const handleDepositSubmit = async (
   const referrer = ethers.constants.AddressZero // TODO
 
   const params = [usersAddress, depositAmountBN, ticketAddress, referrer]
+  console.log("contractAddress", contractAddress)
+  console.log("params", params)
 
   await sendTx(setTx, contractAddress, BanklessPrizePoolAbi, 'depositTo', 'Deposit', params, provider, usersAddress)
 }
 
 export const Deposit = ({ usersAddress }) => {
-  const [depositAmount, setDepositAmount] = useState("10")
+  const [depositAmount, setDepositAmount] = useState("1")
   const { prizePool: prizePoolAddress, ticket: { address: prizePoolTicketAddress, symbol: prizePoolTokenSymbol, decimals: prizePoolTokenSymbolDecimals  } } = usePrizePoolContracts()
 
   const sendTx = useSendTransaction()
