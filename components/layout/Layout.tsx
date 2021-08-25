@@ -1,19 +1,26 @@
-import Head from "next/head"
-import { Container } from "react-bootstrap"
+import Head from 'next/head'
+import * as React from 'react'
+import { Container } from 'react-bootstrap'
 
-import {Header} from './Header/Header'
+import { Header } from './Header/Header'
+import styles from './Layout.module.scss'
 
-export const Layout = ({ children }) => {
-  const description = "Win great prizes by saving in an insured digital wallet. The more money you save, the greater your chance to win!"
+type Props = {
+  children: React.ReactNode
+}
+
+export const Layout = ({ children }: Props) => {
+  const description =
+    'Win great prizes by saving in an insured digital wallet. The more money you save, the greater your chance to win!'
   return (
     <>
       <Head>
         <title>Upside Competition</title>
         <meta name="description" content={description} />
-        </Head>
+      </Head>
       <Container fluid className="p-4 vh-100">
         <Header />
-        <main>{children}</main>
+        <main className={styles.mainContent}>{children}</main>
       </Container>
     </>
   )

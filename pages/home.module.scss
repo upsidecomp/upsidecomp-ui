@@ -1,0 +1,63 @@
+@import "../node_modules/bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+.bannerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3.5em;
+}
+
+.subHeading {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.75em;
+  font-weight: 700;
+  color: #777E90;
+  text-transform: uppercase;
+}
+
+.mainHeading {
+  font-size: 2em;
+  font-weight: 700;
+}
+
+.nftImage {
+  padding: 0 8em 8em;
+  img {
+    width: 100%;
+  }
+}
+
+.container {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+@include media-breakpoint-only(xs) {
+  .container {
+    width: 100%;
+  }
+
+  .nftImage {
+    padding: 0.5em;
+  }
+
+  .bannerContainer {
+    padding-top: 1em;
+  }
+}
+
+.title {
+  font-size: 2em;
+  font-weight: 700;
+  width: 300px;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2em;
+}

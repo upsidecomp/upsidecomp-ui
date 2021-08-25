@@ -1,0 +1,23 @@
+.timer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.timerItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 1em;
+
+  span:first-child {
+   font-size: 2em;
+   font-weight: 600;
+  }
+
+  span:last-child {
+   font-size: 1em;
+   font-weight: 400;
+   color: #777E90;
+  }
+}
