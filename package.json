@@ -14,6 +14,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@pooltogether/etherplex": "^1.1.1",
     "@pooltogether/evm-chains-extended": "^0.4.5",
     "@pooltogether/hooks": "^0.2.0",
     "@pooltogether/pooltogether-contracts": "^3.4.4",

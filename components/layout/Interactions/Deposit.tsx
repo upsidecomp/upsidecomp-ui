@@ -5,7 +5,6 @@ import {usePrizePoolContracts} from "./hooks/usePrizePoolContracts"
 import { Button } from 'react-bootstrap'
 import {parseNumString} from "./libs/utils/parseNumString"
 import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessPrizePool.json'
-import { useProvider } from "./useProvider"
 
 const handleDepositSubmit = async (
   sendTx,
@@ -26,8 +25,12 @@ const handleDepositSubmit = async (
 }
 
 export const Deposit = ({ usersAddress }) => {
-  const [depositAmount, setDepositAmount] = useState("1")
-  const { prizePool: prizePoolAddress, ticket: { address: prizePoolTicketAddress, symbol: prizePoolTokenSymbol, decimals: prizePoolTokenSymbolDecimals  } } = usePrizePoolContracts()
+  const [depositAmount, setDepositAmount] = useState("100000")
+
+
+  useEffect(async () => {
+    const { prizePool: prizePoolAddress, ticket: { address: prizePoolTicketAddress, symbol: prizePoolTokenSymbol, decimals: prizePoolTokenSymbolDecimals  } } = await usePrizePoolContracts()
+  })
 
   const sendTx = useSendTransaction()
 

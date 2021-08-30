@@ -1,24 +1,53 @@
 import { ethers } from 'ethers'
+import { batch, contract } from '@pooltogether/etherplex'
 
 import { POOL_ALIASES } from "../constant.ts"
+import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessPrizePool.json'
+import ERC20Upgradeable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
+import { useProvider } from "./useProvider";
 
-export const usePrizePoolContracts = () => {
-  return {
-    prizePool: POOL_ALIASES["bankless-test"].poolAddress,
-    token: {
-      address: "0x1cf12dbe0d132eeddac7ce9a0008e0e3362656cf",
-      symbol: "BANK",
-      decimals: 18
-    },
-    ticket: {
-      address : "0x722EfEce1F1FE2de0A2aD0Accbb4AD20390Fe09a",
-      symbol: "upBANK",
-      decimals: 18
-    },
-    sponsorship: {
-      address : "0x0f930dAFde1F66B6A5a31a76469fa3e348Cf14D8",
-      symbol: "upsBANK",
-      decimals: 18
+export const usePrizePoolContracts = async () => {
+  const provider = useProvider();
+
+  const prizePoolAddress = POOL_ALIASES["bankless-test"].poolAddress;
+  const prizePoolContract = contract('prizePool', BanklessPrizePoolAbi, prizePoolAddress);
+
+  const prizePoolTokens = await batch(provider, prizePoolContract.tokens())
+  const prizePoolToken = await batch(provider, prizePoolContract.token())
+
+  console.log(prizePoolContract
+    .tokens()
+    .token()
+  )
+
+  const prizePoolTokensArray = await Promise.all(prizePoolTokens.prizePool.tokens[0].map(async (tokenAddress) => {
+    const tokenContract = contract('ERC20', ERC20Upgradeable, tokenAddress);
+    const symbol = await batch(provider, tokenContract.symbol())
+    const decimals = await batch(provider, tokenContract.decimals())
+    return {
+      address: tokenAddress,
+      symbol: symbol.ERC20.symbol[0],
+      decimal: decimals.ERC20.decimals[0]
     }
+  }));
+
+
+  const tokenContract = contract('ERC20', ERC20Upgradeable, prizePoolToken.prizePool.token[0]);
+  const symbol = await batch(provider, tokenContract.symbol())
+  const decimals = await batch(provider, tokenContract.decimals())
+  const prizePoolDepositToken = {
+    address: prizePoolToken.prizePool.token[0],
+    symbol: symbol.ERC20.symbol[0],
+    decimal: decimals.ERC20.decimals[0]
+  }
+
+  return {
+    prizePool: {
+      address: POOL_ALIASES["bankless-test"].poolAddress,
+      contract: prizePoolContract,
+    },
+    ticket: prizePoolTokensArray[0],
+    sponsorship: prizePoolTokensArray[1],
+    token: prizePoolTokensArray
   }
 }

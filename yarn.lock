@@ -1942,6 +1942,16 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
+"@pooltogether/etherplex@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/etherplex/-/etherplex-1.1.1.tgz#330f326ce8fbfd4f4aae70d5fd02d5baa3e9195e"
+  integrity sha512-fKk3/YnAhwjdA83hP7+mXIjRQm40o/+uwdbSWdz0mIgccEwQFkHKXJRGhpM25aclwa5Yiu/p6+sxTHUTpTTM9Q==
+  dependencies:
+    debug "^4.1.1"
+    lodash "^4.17.15"
+    lodash.merge "^4.6.2"
+    zen-observable-ts "^0.8.20"
+
 "@pooltogether/evm-chains-extended@^0.4.5":
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/@pooltogether/evm-chains-extended/-/evm-chains-extended-0.4.5.tgz#2d020672259723327c06be5b4858ca66335e08c5"
@@ -15983,6 +15993,19 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zen-observable-ts@^0.8.20:
+  version "0.8.21"
+  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-0.8.21.tgz#85d0031fbbde1eba3cd07d3ba90da241215f421d"
+  integrity sha512-Yj3yXweRc8LdRMrCC8nIc4kkjWecPAUVh0TI0OUrWXx6aX790vLcDlWca6I4vsyCGH3LpWxq0dJRcMOFoVqmeg==
+  dependencies:
+    tslib "^1.9.3"
+    zen-observable "^0.8.0"
+
+zen-observable@^0.8.0:
+  version "0.8.15"
+  resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.15.tgz#96415c512d8e3ffd920afd3889604e30b9eaac15"
+  integrity sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==
 
 zwitch@^1.0.0:
   version "1.0.5"
