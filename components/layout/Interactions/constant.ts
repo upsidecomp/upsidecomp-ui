@@ -38,3 +38,12 @@ export const CONTRACTS = Object.freeze({
 })
 
 export const SUPPORTED_NETWORKS = [1, 4]
+export const NO_REFETCH_QUERY_OPTIONS = Object.freeze({
+  refetchInterval: false,
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false
+})
+
+export const QUERY_KEYS = {
+  fetchPoolData: 'fetchPoolData',
+}
