@@ -5,6 +5,7 @@ import {usePrizePoolContracts} from "./hooks/usePrizePoolContracts"
 import { Button } from 'react-bootstrap'
 import {parseNumString} from "./libs/utils/parseNumString"
 import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessPrizePool.json'
+import BankAbi from "./libs/abis/Bank.json"
 import { useProvider } from "./useProvider"
 
 const handleDepositSubmit = async (
@@ -37,10 +38,15 @@ export const Deposit = ({ usersAddress }) => {
     completed: false
   })
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const depositAmountBN = parseNumString(depositAmount, prizePoolTokenSymbolDecimals)
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum, "any")
+      const signer = provider.getSigner()
+      const bankContract = new ethers.Contract("0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf", BankAbi, provider)
+      const bankWithSigner = bankContract.connect(signer)
+      await bankWithSigner.approve(window.ethereum.selectedAddress, 100)
+
       handleDepositSubmit(
         sendTx,
         setTx,
