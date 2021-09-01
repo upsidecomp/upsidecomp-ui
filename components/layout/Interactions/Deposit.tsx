@@ -27,8 +27,8 @@ const handleDepositSubmit = async (
 }
 
 export const Deposit = ({ usersAddress }) => {
-  const [depositAmount, setDepositAmount] = useState("1")
-  const { prizePool: prizePoolAddress, ticket: { address: prizePoolTicketAddress, symbol: prizePoolTokenSymbol, decimals: prizePoolTokenSymbolDecimals  } } = usePrizePoolContracts()
+  const [depositAmount, setDepositAmount] = useState("100000")
+  const { data: prizePoolContracts, isFetched: prizePoolContractsIsFetched } = usePrizePoolContracts()
 
   const sendTx = useSendTransaction()
 
@@ -38,8 +38,15 @@ export const Deposit = ({ usersAddress }) => {
     completed: false
   })
 
+  if (!prizePoolContractsIsFetched) return null
+
+  const prizePoolAddress = prizePoolContracts.prizePool.address
+  const ticketAddress = prizePoolContracts.ticket.address
+  const tokenSymbol = "BANK" // fix
+  const ticketSymbol = "upBANK" // fix
+
   const handleSubmit = async () => {
-    const depositAmountBN = parseNumString(depositAmount, prizePoolTokenSymbolDecimals)
+    const depositAmountBN = parseNumString(depositAmount, 18)
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum, "any")
       const signer = provider.getSigner()
@@ -52,7 +59,7 @@ export const Deposit = ({ usersAddress }) => {
         setTx,
         usersAddress,
         prizePoolAddress,
-        prizePoolTicketAddress,
+        ticketAddress,
         depositAmountBN,
         provider,
       )

@@ -21,3 +21,29 @@ export const CONTRACT_ADDRESSES = {
     }
   }
 }
+
+export const PRIZE_POOL_TYPE = Object.freeze({
+  compound: 'compound',
+  stake: 'stake',
+  yield: 'yield'
+})
+
+export const CONTRACTS = Object.freeze({
+  bankless: 'BanklessPrizePool',
+  compound: 'CompoundPrizePool',
+  stake: 'StakePrizePool',
+  yield: 'YieldPrizePool',
+  singleRandomWinner: 'SingleRandomWinner',
+  multipleWinners: 'MultipleWinners'
+})
+
+export const SUPPORTED_NETWORKS = [1, 4]
+export const NO_REFETCH_QUERY_OPTIONS = Object.freeze({
+  refetchInterval: false,
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false
+})
+
+export const QUERY_KEYS = {
+  fetchPoolData: 'fetchPoolData',
+}
