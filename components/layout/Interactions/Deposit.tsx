@@ -51,9 +51,12 @@ export const Deposit = ({ usersAddress }) => {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       const signer = provider.getSigner()
-      const bankContract = new ethers.Contract('0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf', ERC20Upgradable, provider)
-      const bankWithSigner = bankContract.connect(signer)
-      const approveTokens = await bankWithSigner.approve(window.ethereum.selectedAddress, 100) // token approved, what next?
+      const bankContractAddress = "0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf"
+      // const bankContract = new ethers.Contract('0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf', ERC20Upgradable, provider)
+      // const bankWithSigner = bankContract.connect(signer)
+      // const approveTokens = await bankWithSigner.approve(window.ethereum.selectedAddress, 100) // token approved, what next?
+      const prizePoolContract = new ethers.Contract(prizePoolAddress, BanklessPrizePoolAbi, signer)
+      await prizePoolContract.depositTo(window.ethereum.selectedAddress, 100, bankContractAddress, ethers.constants.AddressZero)
 
       // if (approveTokens) {
       //   handleDepositSubmit(sendTx, setTx, usersAddress, prizePoolAddress, ticketAddress, depositAmountBN, provider)
