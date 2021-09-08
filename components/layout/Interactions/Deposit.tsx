@@ -53,10 +53,10 @@ export const Deposit = ({ usersAddress }) => {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       const signer = provider.getSigner()
       const bankContractAddress = '0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf'
-      const bankContract = new ethers.Contract('0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf', ERC20Upgradable, provider)
+      const bankContract = new ethers.Contract(bankContractAddress, ERC20Upgradable, provider)
       const bankWithSigner = bankContract.connect(signer)
       if (typeof depositAmountBN !== 'undefined') {
-        await bankWithSigner.approve(window.ethereum.selectedAddress, parseInt(depositAmount)) // token approved, what next?
+        await bankWithSigner.approve(prizePoolAddress, parseInt(depositAmount)) // token approved, what next?
         bankContract.on('Approval', async () => {
           console.log("approved!")
           console.log(depositAmountBN)
