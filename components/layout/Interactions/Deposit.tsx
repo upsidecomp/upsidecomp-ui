@@ -21,14 +21,15 @@ const handleDepositSubmit = async (
   const referrer = ethers.constants.AddressZero // TODO
 
   const params = [usersAddress, depositAmountBN, ticketAddress, referrer]
-  console.log('contractAddress', contractAddress)
-  console.log('params', params)
+  // console.log('contractAddress', contractAddress)
+  // console.log('params', params)
 
   await sendTx(setTx, contractAddress, BanklessPrizePoolAbi, 'depositTo', 'Deposit', params, provider, usersAddress)
 }
 
 export const Deposit = ({ usersAddress }) => {
-  const [depositAmount, setDepositAmount] = useState('100000')
+  const [depositAmount, setDepositAmount] = useState('100')
+  // console.log(usePrizePoolContracts())
   const { data: prizePoolContracts, isFetched: prizePoolContractsIsFetched } = usePrizePoolContracts()
 
   const sendTx = useSendTransaction()
@@ -51,16 +52,17 @@ export const Deposit = ({ usersAddress }) => {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       const signer = provider.getSigner()
-      const bankContractAddress = "0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf"
-      // const bankContract = new ethers.Contract('0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf', ERC20Upgradable, provider)
-      // const bankWithSigner = bankContract.connect(signer)
-      // const approveTokens = await bankWithSigner.approve(window.ethereum.selectedAddress, 100) // token approved, what next?
-      const prizePoolContract = new ethers.Contract(prizePoolAddress, BanklessPrizePoolAbi, signer)
-      await prizePoolContract.depositTo(window.ethereum.selectedAddress, 100, bankContractAddress, ethers.constants.AddressZero)
-
-      // if (approveTokens) {
-      //   handleDepositSubmit(sendTx, setTx, usersAddress, prizePoolAddress, ticketAddress, depositAmountBN, provider)
-      // }
+      const bankContractAddress = '0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf'
+      const bankContract = new ethers.Contract('0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf', ERC20Upgradable, provider)
+      const bankWithSigner = bankContract.connect(signer)
+      if (typeof depositAmountBN !== 'undefined') {
+        await bankWithSigner.approve(window.ethereum.selectedAddress, parseInt(depositAmount)) // token approved, what next?
+        bankContract.on('Approval', async () => {
+          console.log("approved!")
+          console.log(depositAmountBN)
+          await handleDepositSubmit(sendTx, setTx, usersAddress, prizePoolAddress, ticketAddress, depositAmountBN, provider)
+        })
+      }
     }
   }
 
