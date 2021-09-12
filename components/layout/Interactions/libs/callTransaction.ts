@@ -1,6 +1,7 @@
 import { ethers } from 'ethers'
 
 import { toast } from '../hooks/useToast'
+import { parseNumString } from "../libs/utils/parseNumString"
 
 const GAS_MULTIPLIER = 1.15
 
@@ -39,18 +40,22 @@ export const callTransaction = async (
   }
 
   const data = contract.interface.encodeFunctionData(fxn, params)
+  const value = parseNumString('0', 18)
 
   const chainId = provider.network.chainId
-  let transactionRequest = {
+  let transactionRequest: ethers.Transaction = {
     to: contractAddress,
     nonce: nextNonce,
-    data,
-    chainId
+    data: data,
+    chainId: chainId,
+    value: value
   }
 
-  let gasEstimate
+
+  let gasEstimate: ethers.BigNumber
   try {
     gasEstimate = await contract.estimateGas[method](...params)
+    console.log("gasEstimate: ", gasEstimate.toNumber())
   } catch (e) {
     console.warn(`error while estimating gas: `, e)
   }
@@ -58,7 +63,7 @@ export const callTransaction = async (
   if (includesGasLimitParam) {
     transactionRequest.gasLimit = gasLimit
   } else if (gasEstimate) {
-    transactionRequest.gasLimit = parseInt(gasEstimate.toNumber() * GAS_MULTIPLIER, 10)
+    transactionRequest.gasLimit = parseNumString(Math.round(gasEstimate.toNumber() * GAS_MULTIPLIER).toString(), "wei")
   }
 
   try {

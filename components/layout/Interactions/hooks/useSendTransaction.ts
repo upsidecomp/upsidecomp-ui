@@ -13,7 +13,7 @@ export const useSendTransaction = () => {
         toast.error('Your current network does not match the network which this pool lives on.')
         return
       }
-      // console.log(setTx, contractAddress, contractAbi, method, txName, params)
+      console.log({setTx, contractAddress, contractAbi, method, txName, params})
       callTransaction(
         setTx,
         provider,
