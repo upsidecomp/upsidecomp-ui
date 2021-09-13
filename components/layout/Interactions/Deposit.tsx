@@ -28,7 +28,7 @@ const handleDepositSubmit = async (
 }
 
 export const Deposit = ({ usersAddress }) => {
-  const [depositAmount, setDepositAmount] = useState('100.0')
+  const [depositAmount, setDepositAmount] = useState("100")
   const { data: prizePoolContracts, isFetched: prizePoolContractsIsFetched } = usePrizePoolContracts()
 
   const sendTx = useSendTransaction()
@@ -47,18 +47,14 @@ export const Deposit = ({ usersAddress }) => {
   const ticketSymbol = 'upBANK' // fix
 
   const handleSubmit = async () => {
-    const depositAmountBN: ethers.BigNumber = parseNumString(depositAmount, "wei")
-    // const depositAmountBN: ethers.BigNumber = ethers.BigNumber.from(depositAmount)
-    // const depositAmountBN: ethers.BigNumber = ethers.utils.parseUnits(depositAmount, "wei")
-    console.log("depositAmountBN: ", depositAmountBN)
-    console.log(depositAmountBN.toNumber())
+    const depositAmountBN: ethers.BigNumber = parseNumString(depositAmount, 18)
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       const signer = provider.getSigner()
       const bankContractAddress = '0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf'
       const bankContract = new ethers.Contract(bankContractAddress, ERC20Upgradable, provider)
       const bankWithSigner = bankContract.connect(signer)
-      await bankWithSigner.approve(prizePoolAddress, depositAmountBN.toNumber()) // token approved, what next?
+      await bankWithSigner.approve(prizePoolAddress, depositAmountBN) // token approved, what next?
       bankContract.on('Approval', async (owner: any, spender: any, amount: any) => {
         console.log({owner, spender, amount})
         await handleDepositSubmit(
