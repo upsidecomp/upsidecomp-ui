@@ -57,7 +57,7 @@ export const Header = (props: HeaderProps) => {
   }, [provider])
 
   return (
-    <Navbar bg="light" expand="lg" className={styles.navbarArea}>
+    <Navbar bg="light" expand="lg" fixed="top" className={styles.navbarArea}>
       <Container>
         <Navbar.Brand href="/">
           <img className={styles.logo} src="/images/upside-logo.png" alt="Upside Competition" />
