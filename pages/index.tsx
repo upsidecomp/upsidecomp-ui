@@ -11,11 +11,11 @@ const data = {
   nftTitle: 'Bored Ape Yatch Club #3651',
   organiser: {
     avatarUrl: '/images/avatar.svg',
-    name: 'BoredApeYC',
+    name: 'BanklessDAO',
   },
   competition: {
     totalDeposit: 100000,
-    endDate: new Date('2021-08-30 23:59:59'),
+    endDate: new Date('2021-10-30 23:59:59'),
   },
 }
 
