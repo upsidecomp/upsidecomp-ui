@@ -6,7 +6,7 @@ import { ethers } from 'ethers'
  * @param {string} address
  * @returns a Boolean
  */
-export const isValidAddress = (address) => {
+export const isValidAddress = (address: any) => {
   if (!address) return
 
   try {

@@ -8,16 +8,16 @@ const GAS_MULTIPLIER = 1.15
 // this could be smart enough to know which ABI to use based on
 // the contract address
 export const callTransaction = async (
-  setTx,
-  provider,
-  usersAddress,
-  contractAddress,
-  contractAbi,
-  method,
-  txName,
+  setTx: any,
+  provider: ethers.providers.Web3Provider,
+  usersAddress: string,
+  contractAddress: string,
+  contractAbi: any,
+  method: string,
+  txName: string,
   params = []
 ) => {
-  let ethersTx
+  let ethersTx: any
 
   setTx({
     inWallet: true
@@ -34,25 +34,31 @@ export const callTransaction = async (
   let gasLimit
   const lastParam = params[params.length - 1]
   const includesGasLimitParam =
+  // @ts-ignore
     typeof lastParam === 'object' && lastParam.hasOwnProperty('gasLimit')
   if (includesGasLimitParam) {
+    // @ts-ignore
     gasLimit = params.pop().gasLimit
   }
 
-  const data = contract.interface.encodeFunctionData(fxn, params)
+  let data: string = ""
+  typeof fxn !== "undefined" &&
+    (data = contract.interface.encodeFunctionData(fxn, params))
   const value = parseNumString('0', 18)
 
   const chainId = provider.network.chainId
-  let transactionRequest: ethers.Transaction = {
+  
+  let transactionRequest = {
     to: contractAddress,
     nonce: nextNonce,
     data: data,
     chainId: chainId,
-    value: value
+    value: value,
+    gasLimit: ethers.constants.Zero
   }
 
 
-  let gasEstimate: ethers.BigNumber
+  let gasEstimate
   try {
     gasEstimate = await contract.estimateGas[method](...params)
     console.log("gasEstimate: ", gasEstimate.toNumber())
@@ -74,7 +80,7 @@ export const callTransaction = async (
     // failing to get the nonce on Kovan w/ MetaMask
     ethersTx = await signer.sendTransaction(transactionRequest)
 
-    setTx((tx) => ({
+    setTx((tx: any) => ({
       ...tx,
       hash: ethersTx.hash,
       inWallet: false,
@@ -83,7 +89,7 @@ export const callTransaction = async (
 
     await ethersTx.wait()
 
-    setTx((tx) => ({
+    setTx((tx: any) => ({
       ...tx,
       completed: true
     }))
@@ -93,7 +99,7 @@ export const callTransaction = async (
     console.error(e)
 
     if (e?.message?.match('User denied transaction signature')) {
-      setTx((tx) => ({
+      setTx((tx: any) => ({
         ...tx,
         // TODO: should be false, false, true. Need to add 'cancelled' states throughout the app.
         completed: true,
@@ -104,7 +110,7 @@ export const callTransaction = async (
       toast.warn('Transaction cancelled')
       // You cancelled the transaction
     } else {
-      setTx((tx) => ({
+      setTx((tx: any) => ({
         ...tx,
         completed: true,
         error: true

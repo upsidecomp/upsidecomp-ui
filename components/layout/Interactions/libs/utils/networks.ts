@@ -1,17 +1,17 @@
 import { getChain } from '@pooltogether/evm-chains-extended'
 
-export const NETWORK = Object.freeze({
+export const NETWORK: any = Object.freeze({
   'mainnet': 1,
   'rinkeby': 4,
 })
 
-export const getChainIdByAlias = (networkAlias) => {
+export const getChainIdByAlias = (networkAlias: any) => {
   return NETWORK[networkAlias]
 }
 
-export const getNetworkNameAliasByChainId = (chainId) => {
+export const getNetworkNameAliasByChainId = (chainId: any) => {
   const networkKeys = Object.keys(NETWORK)
-  const networkAlias = networkKeys.find((networkKey) => NETWORK[networkKey] === chainId)
+  const networkAlias = networkKeys.find((networkKey: string) => NETWORK[networkKey] === chainId)
 
   if (typeof networkAlias === 'undefined') {
     return null
@@ -20,7 +20,7 @@ export const getNetworkNameAliasByChainId = (chainId) => {
   return networkAlias
 }
 
-export const networkColorClassname = (networkId) => {
+export const networkColorClassname = (networkId: any) => {
   if (networkId === 4) {
     return 'text-yellow-1'
   } else {

@@ -3,11 +3,11 @@ import { batch, contract } from '@pooltogether/etherplex'
 import { useQuery } from 'react-query'
 
 import { isValidAddress} from "../libs/utils/address"
-import { POOL_ALIASES, NO_REFETCH_QUERY_OPTIONS, QUERY_KEYS  } from "../constant.ts"
+import { POOL_ALIASES, NO_REFETCH_QUERY_OPTIONS, QUERY_KEYS  } from "../constant"
 import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessPrizePool.json'
 import BanklessMultipleWinners from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessMultipleWinners.json'
-import RegistryAbi from '@pooltogether/pooltogether-contracts/abis/Registry'
-import ERC20Upgradeable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
+// import RegistryAbi from '@pooltogether/pooltogether-contracts/abis/Registry'
+// import ERC20Upgradeable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
 import { useProvider } from "./useProvider";
 
 export const usePrizePoolContracts = () => {
@@ -30,16 +30,18 @@ export const usePrizePoolContracts = () => {
     )
 }
 
-const _fetchPrizePoolAndPrizeStrategy = async (provider, prizePoolAddress) => {
+const _fetchPrizePoolAndPrizeStrategy = async (provider: ethers.providers.InfuraProvider, prizePoolAddress: string) => {
   let prizePoolAbi = BanklessPrizePoolAbi
   let prizeStrategyAbi = BanklessMultipleWinners
 
   const prizePoolContract = contract('prizePoolData', BanklessPrizePoolAbi, prizePoolAddress)
+  // @ts-ignore
   const prizePoolValues = await batch(provider, prizePoolContract.prizeStrategy())
   const prizeStrategyAddres = prizePoolValues.prizePoolData.prizeStrategy[0].toLowerCase()
 
   // first requests
   const firstRequests = []
+  // @ts-ignore
   firstRequests.push(prizePoolContract.token())
   const { prizePoolData } = await batch(provider, ...firstRequests)
 
@@ -53,6 +55,7 @@ const _fetchPrizePoolAndPrizeStrategy = async (provider, prizePoolAddress) => {
   secondRequests.push()
   secondRequests.push(
     prizeStrategyContract
+    // @ts-ignore
       .tokenListener() // comptroller
       .rng()
       .sponsorship()
@@ -61,7 +64,7 @@ const _fetchPrizePoolAndPrizeStrategy = async (provider, prizePoolAddress) => {
 
   const { prizeStrategyData, registry } = await batch(provider, ...secondRequests)
 
-  const addresses = {
+  const addresses: any = {
     rng: { address: '' },
     sponsorship: { address: '' },
     ticket: { address: '' },

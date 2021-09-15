@@ -6,17 +6,19 @@ import { Button } from 'react-bootstrap'
 import { parseNumString } from './libs/utils/parseNumString'
 import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessPrizePool.json'
 import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
-import BankAbi from './libs/abis/Bank.json'
-import { useProvider } from './useProvider'
+
+declare global {
+  interface Window { ethereum: any }
+}
 
 const handleDepositSubmit = async (
-  sendTx,
-  setTx,
-  usersAddress,
-  contractAddress,
-  ticketAddress,
-  depositAmountBN,
-  provider,
+  sendTx: any,
+  setTx: any,
+  usersAddress: string,
+  contractAddress: string,
+  ticketAddress: string,
+  depositAmountBN: ethers.BigNumber,
+  provider: ethers.providers.Web3Provider,
 ) => {
   const referrer = ethers.constants.AddressZero // TODO
 
@@ -27,7 +29,7 @@ const handleDepositSubmit = async (
   await sendTx(setTx, contractAddress, BanklessPrizePoolAbi, 'depositTo', 'Deposit', params, provider, usersAddress)
 }
 
-export const Deposit = ({ usersAddress }) => {
+export const Deposit = ({ usersAddress }: any) => {
   const [depositAmount, setDepositAmount] = useState("100")
   const { data: prizePoolContracts, isFetched: prizePoolContractsIsFetched } = usePrizePoolContracts()
 
@@ -41,8 +43,12 @@ export const Deposit = ({ usersAddress }) => {
 
   if (!prizePoolContractsIsFetched) return null
 
-  const prizePoolAddress = prizePoolContracts.prizePool.address
-  const ticketAddress = prizePoolContracts.ticket.address
+  let prizePoolAddress: string
+  let ticketAddress: string
+  if (typeof prizePoolContracts !== "undefined") {
+    prizePoolAddress = prizePoolContracts.prizePool.address
+    ticketAddress = prizePoolContracts.ticket.address
+  }
   const tokenSymbol = 'BANK' // fix
   const ticketSymbol = 'upBANK' // fix
 

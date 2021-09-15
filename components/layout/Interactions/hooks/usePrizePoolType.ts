@@ -1,6 +1,6 @@
-import { CONTRACTS, PRIZE_POOL_TYPE } from 'lib/constants'
+import { CONTRACTS, PRIZE_POOL_TYPE } from '../constant'
 
-export const determinePrizePoolType = (contract) => {
+export const determinePrizePoolType = (contract: any) => {
 switch (contract) {
   case CONTRACTS.compound: {
     return PRIZE_POOL_TYPE.compound
