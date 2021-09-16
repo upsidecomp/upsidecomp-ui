@@ -3,6 +3,7 @@ import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis
 import { ethers } from 'ethers'
 import { useState } from 'react'
 import { Button } from 'react-bootstrap'
+import { ERC20_CONTRACTS } from 'utils/constant'
 import { usePrizePoolContracts } from 'utils/hooks/usePrizePoolContracts'
 import { useSendTransaction } from 'utils/hooks/useSendTransaction'
 import { parseNumString } from 'utils/libs/parseNumString'
@@ -57,8 +58,7 @@ export const Deposit = ({ usersAddress }: any) => {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       const signer = provider.getSigner()
-      const bankContractAddress = '0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf'
-      const bankContract = new ethers.Contract(bankContractAddress, ERC20Upgradable, provider)
+      const bankContract = new ethers.Contract(ERC20_CONTRACTS.bank, ERC20Upgradable, provider)
       const bankWithSigner = bankContract.connect(signer)
       await bankWithSigner.approve(prizePoolAddress, depositAmountBN) // token approved, what next?
       bankContract.on('Approval', async (owner: any, spender: any, amount: any) => {
