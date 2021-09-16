@@ -4,11 +4,11 @@ const CustomTransitions = ReactToastify.cssTransition({
   enter: 'slideInUp',
   exit: 'slideIn',
   collapse: true,
-  collapseDuration: 300
+  collapseDuration: 300,
 })
 
 const DEFAULT_OPTIONS = {
-  transition: CustomTransitions
+  transition: CustomTransitions,
 }
 
 export const toast = {
@@ -30,5 +30,5 @@ export const toast = {
   warn: (message: any, options = DEFAULT_OPTIONS) => {
     ReactToastify.toast.dismiss()
     ReactToastify.toast.warn(message, options)
-  }
+  },
 }

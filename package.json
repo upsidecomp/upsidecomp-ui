@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "prettier:all": "prettier . --check",
     "prettier:all:fix": "prettier . --write",
     "type-checks": "tsc",

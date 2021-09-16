@@ -1,8 +1,8 @@
 import { getChain } from '@pooltogether/evm-chains-extended'
 
 export const NETWORK: any = Object.freeze({
-  'mainnet': 1,
-  'rinkeby': 4,
+  mainnet: 1,
+  rinkeby: 4,
 })
 
 export const getChainIdByAlias = (networkAlias: any) => {

@@ -1,13 +1,11 @@
+// todo: remove
+import { Deposit } from '@components/layout/Interactions/Deposit'
+import { useProvider } from '@components/layout/Interactions/hooks/useProvider'
 import { ethers } from 'ethers'
 import * as React from 'react'
 import { Button, Container, Navbar } from 'react-bootstrap'
 
 import styles from './Header.module.scss'
-import { useProvider } from "@components/layout/Interactions/hooks/useProvider"
-
-// todo: remove
-import { Deposit } from "@components/layout/Interactions/Deposit"
-
 
 export type HeaderProps = {
   id?: string
@@ -16,7 +14,7 @@ export type HeaderProps = {
 export const Header = (props: HeaderProps) => {
   const [accountAddress, setAccountAddress] = React.useState('')
 
-  let provider;
+  let provider
 
   const connectButtonOnClick = async () => {
     // @ts-ignore
@@ -40,7 +38,7 @@ export const Header = (props: HeaderProps) => {
         setAccountAddress(address || '')
 
         // @ts-ignore
-        provider = new ethers.providers.Web3Provider(window.ethereum, "any")
+        provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
 
         // force refresh page on network change
         provider.on('network', (newNetwork, oldNetwork) => {

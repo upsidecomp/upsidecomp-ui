@@ -1,14 +1,17 @@
-import { ethers } from 'ethers'
-import { useState, useEffect } from 'react'
-import { useSendTransaction } from './hooks/useSendTransaction'
-import { usePrizePoolContracts } from './hooks/usePrizePoolContracts'
-import { Button } from 'react-bootstrap'
-import { parseNumString } from './libs/utils/parseNumString'
 import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessPrizePool.json'
 import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
+import { ethers } from 'ethers'
+import { useEffect,useState } from 'react'
+import { Button } from 'react-bootstrap'
+
+import { usePrizePoolContracts } from './hooks/usePrizePoolContracts'
+import { useSendTransaction } from './hooks/useSendTransaction'
+import { parseNumString } from './libs/utils/parseNumString'
 
 declare global {
-  interface Window { ethereum: any }
+  interface Window {
+    ethereum: any
+  }
 }
 
 const handleDepositSubmit = async (
@@ -23,14 +26,12 @@ const handleDepositSubmit = async (
   const referrer = ethers.constants.AddressZero // TODO
 
   const params = [usersAddress, depositAmountBN, ticketAddress, referrer]
-  // console.log('contractAddress', contractAddress)
-  // console.log('params', params)
 
   await sendTx(setTx, contractAddress, BanklessPrizePoolAbi, 'depositTo', 'Deposit', params, provider, usersAddress)
 }
 
 export const Deposit = ({ usersAddress }: any) => {
-  const [depositAmount, setDepositAmount] = useState("100")
+  const [depositAmount, setDepositAmount] = useState('100')
   const { data: prizePoolContracts, isFetched: prizePoolContractsIsFetched } = usePrizePoolContracts()
 
   const sendTx = useSendTransaction()
@@ -45,7 +46,7 @@ export const Deposit = ({ usersAddress }: any) => {
 
   let prizePoolAddress: string
   let ticketAddress: string
-  if (typeof prizePoolContracts !== "undefined") {
+  if (typeof prizePoolContracts !== 'undefined') {
     prizePoolAddress = prizePoolContracts.prizePool.address
     ticketAddress = prizePoolContracts.ticket.address
   }
@@ -62,7 +63,6 @@ export const Deposit = ({ usersAddress }: any) => {
       const bankWithSigner = bankContract.connect(signer)
       await bankWithSigner.approve(prizePoolAddress, depositAmountBN) // token approved, what next?
       bankContract.on('Approval', async (owner: any, spender: any, amount: any) => {
-        console.log({owner, spender, amount})
         await handleDepositSubmit(
           sendTx,
           setTx,

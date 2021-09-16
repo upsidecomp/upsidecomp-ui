@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 
 import { toast } from '../hooks/useToast'
-import { parseNumString } from "../libs/utils/parseNumString"
+import { parseNumString } from '../libs/utils/parseNumString'
 
 const GAS_MULTIPLIER = 1.15
 
@@ -15,12 +15,12 @@ export const callTransaction = async (
   contractAbi: any,
   method: string,
   txName: string,
-  params = []
+  params = [],
 ) => {
   let ethersTx: any
 
   setTx({
-    inWallet: true
+    inWallet: true,
   })
 
   const signer = provider.getSigner()
@@ -29,39 +29,36 @@ export const callTransaction = async (
 
   const nextNonce = await provider.getTransactionCount(usersAddress, 'pending')
 
-  const fxn = Object.values(contract.interface.functions).find((fn) => fn.name === method)
+  const fxn = Object.values(contract.interface.functions).find(fn => fn.name === method)
 
   let gasLimit
   const lastParam = params[params.length - 1]
   const includesGasLimitParam =
-  // @ts-ignore
+    // @ts-ignore
     typeof lastParam === 'object' && lastParam.hasOwnProperty('gasLimit')
   if (includesGasLimitParam) {
     // @ts-ignore
     gasLimit = params.pop().gasLimit
   }
 
-  let data: string = ""
-  typeof fxn !== "undefined" &&
-    (data = contract.interface.encodeFunctionData(fxn, params))
+  let data = ''
+  typeof fxn !== 'undefined' && (data = contract.interface.encodeFunctionData(fxn, params))
   const value = parseNumString('0', 18)
 
   const chainId = provider.network.chainId
-  
-  let transactionRequest = {
+
+  const transactionRequest = {
     to: contractAddress,
     nonce: nextNonce,
     data: data,
     chainId: chainId,
     value: value,
-    gasLimit: ethers.constants.Zero
+    gasLimit: ethers.constants.Zero,
   }
-
 
   let gasEstimate
   try {
     gasEstimate = await contract.estimateGas[method](...params)
-    console.log("gasEstimate: ", gasEstimate.toNumber())
   } catch (e) {
     console.warn(`error while estimating gas: `, e)
   }
@@ -69,7 +66,7 @@ export const callTransaction = async (
   if (includesGasLimitParam) {
     transactionRequest.gasLimit = gasLimit
   } else if (gasEstimate) {
-    transactionRequest.gasLimit = parseNumString(Math.round(gasEstimate.toNumber() * GAS_MULTIPLIER).toString(), "wei")
+    transactionRequest.gasLimit = parseNumString(Math.round(gasEstimate.toNumber() * GAS_MULTIPLIER).toString(), 'wei')
   }
 
   try {
@@ -84,14 +81,14 @@ export const callTransaction = async (
       ...tx,
       hash: ethersTx.hash,
       inWallet: false,
-      sent: true
+      sent: true,
     }))
 
     await ethersTx.wait()
 
     setTx((tx: any) => ({
       ...tx,
-      completed: true
+      completed: true,
     }))
 
     toast.success(`"${txName}" transaction successful!`)
@@ -104,7 +101,7 @@ export const callTransaction = async (
         // TODO: should be false, false, true. Need to add 'cancelled' states throughout the app.
         completed: true,
         error: true,
-        cancelled: true
+        cancelled: true,
       }))
 
       toast.warn('Transaction cancelled')
@@ -113,7 +110,7 @@ export const callTransaction = async (
       setTx((tx: any) => ({
         ...tx,
         completed: true,
-        error: true
+        error: true,
       }))
 
       toast.error(`Error with "${txName}" - See JS Console for details`)

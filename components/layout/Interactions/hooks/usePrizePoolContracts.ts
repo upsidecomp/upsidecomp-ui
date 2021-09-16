@@ -1,38 +1,37 @@
-import { ethers } from 'ethers'
 import { batch, contract } from '@pooltogether/etherplex'
+import BanklessMultipleWinners from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessMultipleWinners.json'
+import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessPrizePool.json'
+import { ethers } from 'ethers'
 import { useQuery } from 'react-query'
 
-import { isValidAddress} from "../libs/utils/address"
-import { POOL_ALIASES, NO_REFETCH_QUERY_OPTIONS, QUERY_KEYS  } from "../constant"
-import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessPrizePool.json'
-import BanklessMultipleWinners from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessMultipleWinners.json'
+import { NO_REFETCH_QUERY_OPTIONS, POOL_ALIASES, QUERY_KEYS } from '../constant'
+import { isValidAddress } from '../libs/utils/address'
 // import RegistryAbi from '@pooltogether/pooltogether-contracts/abis/Registry'
 // import ERC20Upgradeable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
-import { useProvider } from "./useProvider";
+import { useProvider } from './useProvider'
 
 export const usePrizePoolContracts = () => {
-  const provider = useProvider();
-  const prizePoolType = "BanklessPrizePool"
-  const prizePoolAddress = POOL_ALIASES["bankless-test"].poolAddress;
+  const provider = useProvider()
+  const prizePoolType = 'BanklessPrizePool'
+  const prizePoolAddress = POOL_ALIASES['bankless-test'].poolAddress
   const poolAddressIsValid = isValidAddress(prizePoolAddress)
   const enabled = Boolean(prizePoolAddress) && poolAddressIsValid
 
   return useQuery(
     [QUERY_KEYS.fetchPoolData, prizePoolType, prizePoolAddress],
-    async () =>
-          await _fetchPrizePoolAndPrizeStrategy(provider, prizePoolAddress),
-        // @ts-ignore
-        {
-          ...NO_REFETCH_QUERY_OPTIONS,
-          enabled,
-          staleTime: Infinity
-        }
-    )
+    async () => await _fetchPrizePoolAndPrizeStrategy(provider, prizePoolAddress),
+    // @ts-ignore
+    {
+      ...NO_REFETCH_QUERY_OPTIONS,
+      enabled,
+      staleTime: Infinity,
+    },
+  )
 }
 
 const _fetchPrizePoolAndPrizeStrategy = async (provider: ethers.providers.InfuraProvider, prizePoolAddress: string) => {
-  let prizePoolAbi = BanklessPrizePoolAbi
-  let prizeStrategyAbi = BanklessMultipleWinners
+  const prizePoolAbi = BanklessPrizePoolAbi
+  const prizeStrategyAbi = BanklessMultipleWinners
 
   const prizePoolContract = contract('prizePoolData', BanklessPrizePoolAbi, prizePoolAddress)
   // @ts-ignore
@@ -47,15 +46,11 @@ const _fetchPrizePoolAndPrizeStrategy = async (provider: ethers.providers.Infura
 
   // second
   const secondRequests = []
-  const prizeStrategyContract = contract(
-    'prizeStrategyData',
-    prizeStrategyAbi,
-    prizeStrategyAddres
-  )
+  const prizeStrategyContract = contract('prizeStrategyData', prizeStrategyAbi, prizeStrategyAddres)
   secondRequests.push()
   secondRequests.push(
     prizeStrategyContract
-    // @ts-ignore
+      // @ts-ignore
       .tokenListener() // comptroller
       .rng()
       .sponsorship()
@@ -70,27 +65,27 @@ const _fetchPrizePoolAndPrizeStrategy = async (provider: ethers.providers.Infura
     ticket: { address: '' },
     token: { address: '' },
     tokenListener: { address: '' },
-    beforeAwardListener: { address: '' }
+    beforeAwardListener: { address: '' },
   }
 
-  Object.keys(prizeStrategyData).forEach((key) => {
+  Object.keys(prizeStrategyData).forEach(key => {
     addresses[key] = { address: prizeStrategyData[key][0].toLowerCase() }
   })
-  Object.keys(prizePoolData).forEach((key) => {
+  Object.keys(prizePoolData).forEach(key => {
     addresses[key] = { address: prizePoolData[key][0].toLowerCase() }
   })
 
   return {
     prizePool: {
-    address: prizePoolAddress,
-    contract: prizePoolAbi,
-    version: ''
-  },
-  prizeStrategy: {
-    address: prizeStrategyAddres,
-    contract: prizeStrategyAbi,
-    version: ''
-  },
-    ...addresses
+      address: prizePoolAddress,
+      contract: prizePoolAbi,
+      version: '',
+    },
+    prizeStrategy: {
+      address: prizeStrategyAddres,
+      contract: prizeStrategyAbi,
+      version: '',
+    },
+    ...addresses,
   }
 }
