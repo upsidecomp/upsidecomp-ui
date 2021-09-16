@@ -1,6 +1,5 @@
 // todo: remove
 import { Deposit } from '@components/layout/Interactions/Deposit'
-import { useProvider } from '@components/layout/Interactions/hooks/useProvider'
 import { ethers } from 'ethers'
 import * as React from 'react'
 import { Button, Container, Navbar } from 'react-bootstrap'

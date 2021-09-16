@@ -1,12 +1,11 @@
 import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/BanklessPrizePool.json'
 import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
 import { ethers } from 'ethers'
-import { useEffect,useState } from 'react'
+import { useState } from 'react'
 import { Button } from 'react-bootstrap'
-
-import { usePrizePoolContracts } from './hooks/usePrizePoolContracts'
-import { useSendTransaction } from './hooks/useSendTransaction'
-import { parseNumString } from './libs/utils/parseNumString'
+import { usePrizePoolContracts } from 'utils/hooks/usePrizePoolContracts'
+import { useSendTransaction } from 'utils/hooks/useSendTransaction'
+import { parseNumString } from 'utils/libs/parseNumString'
 
 declare global {
   interface Window {

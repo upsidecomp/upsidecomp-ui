@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 
 import { toast } from '../hooks/useToast'
-import { parseNumString } from '../libs/utils/parseNumString'
+import { parseNumString } from 'utils/libs/parseNumString'
 
 const GAS_MULTIPLIER = 1.15
 

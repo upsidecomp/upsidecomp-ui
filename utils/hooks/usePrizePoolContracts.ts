@@ -5,7 +5,7 @@ import { ethers } from 'ethers'
 import { useQuery } from 'react-query'
 
 import { NO_REFETCH_QUERY_OPTIONS, POOL_ALIASES, QUERY_KEYS } from '../constant'
-import { isValidAddress } from '../libs/utils/address'
+import { isValidAddress } from 'utils/libs/address'
 // import RegistryAbi from '@pooltogether/pooltogether-contracts/abis/Registry'
 // import ERC20Upgradeable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
 import { useProvider } from './useProvider'
