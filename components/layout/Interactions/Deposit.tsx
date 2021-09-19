@@ -31,7 +31,7 @@ const handleDepositSubmit = async (
 }
 
 export const Deposit = ({ usersAddress }: any) => {
-  const [depositAmount, setDepositAmount] = useState('100')
+  const [depositAmount, setDepositAmount] = useState('10')
   const { data: prizePoolContracts, isFetched: prizePoolContractsIsFetched } = usePrizePoolContracts()
 
   const sendTx = useSendTransaction()
@@ -58,10 +58,16 @@ export const Deposit = ({ usersAddress }: any) => {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       const signer = provider.getSigner()
-      const bankContract = new ethers.Contract(ERC20_CONTRACTS.bank, ERC20Upgradable, provider)
+      const bankContract: ethers.Contract = new ethers.Contract(ERC20_CONTRACTS.bank, ERC20Upgradable, provider)
       const bankWithSigner = bankContract.connect(signer)
-      await bankWithSigner.approve(prizePoolAddress, depositAmountBN) // token approved, what next?
-      bankContract.on('Approval', async (owner: any, spender: any, amount: any) => {
+
+      // NOTE: Approval event is based on event of transaction receipt
+      // and not from polling
+      const tx: ethers.ContractTransaction = await bankWithSigner.approve(prizePoolAddress, depositAmountBN) //
+      const txReceipt: ethers.ContractReceipt = await tx.wait()
+      const event = txReceipt.events?.find(event => event.event === 'Approval')
+
+      if (event) {
         await handleDepositSubmit(
           sendTx,
           setTx,
@@ -71,7 +77,7 @@ export const Deposit = ({ usersAddress }: any) => {
           depositAmountBN,
           provider,
         )
-      })
+      }
     }
   }
 

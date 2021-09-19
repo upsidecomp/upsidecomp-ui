@@ -53,7 +53,6 @@ export const callTransaction = async (
     data: data,
     chainId: chainId,
     value: value,
-    gasLimit: ethers.constants.Zero,
   }
 
   let gasEstimate
@@ -64,9 +63,9 @@ export const callTransaction = async (
   }
 
   if (includesGasLimitParam) {
-    transactionRequest.gasLimit = gasLimit
+    transactionRequest["gasLimit"] = gasLimit
   } else if (gasEstimate) {
-    transactionRequest.gasLimit = parseNumString(Math.round(gasEstimate.toNumber() * GAS_MULTIPLIER).toString(), 'wei')
+    transactionRequest["gasLimit"] = parseNumString(Math.round(gasEstimate.toNumber() * GAS_MULTIPLIER).toString(), 'wei')
   }
 
   try {
