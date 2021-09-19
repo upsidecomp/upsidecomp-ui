@@ -12,20 +12,22 @@ export const Timer = ({ endDate }: Props) => {
 
     if (difference > 0) {
       return {
-        hours: Math.floor(difference / (1000 * 60 * 60)),
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((difference / 1000 / 60) % 60),
         seconds: Math.floor((difference / 1000) % 60),
       }
     }
 
     return {
+      days: 0,
       hours: 0,
       minutes: 0,
       seconds: 0,
     }
   }
 
-  const [timeLeft, setTimeLeft] = React.useState<{ hours: number; minutes: number; seconds: number }>(
+  const [timeLeft, setTimeLeft] = React.useState<{ days: number; hours: number; minutes: number; seconds: number }>(
     calculateTimeLeft(),
   )
 
@@ -37,6 +39,10 @@ export const Timer = ({ endDate }: Props) => {
 
   return (
     <div className={styles.timer}>
+      <div className={styles.timerItem}>
+        <span>{timeLeft.days}</span>
+        <span>{`Day${timeLeft.days > 1 ? 's' : ''}`}</span>
+      </div>
       <div className={styles.timerItem}>
         <span>{timeLeft.hours}</span>
         <span>Hrs</span>
