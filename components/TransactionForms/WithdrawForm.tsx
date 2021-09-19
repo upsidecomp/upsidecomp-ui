@@ -33,6 +33,7 @@ export const WithdrawForm = () => {
       <div className={styles.subtitle}>Please input how much upBANK token you want to withdraw</div>
       <InputGroup hasValidation>
         <Form.Control
+          value={withdrawAmount}
           onChange={e => {
             setWithdrawAmount(e.currentTarget.value !== '' ? parseFloat(e.currentTarget.value) : 0)
           }}
@@ -45,7 +46,7 @@ export const WithdrawForm = () => {
       <Form.Text id="passwordHelpBlock" muted>
         {`Balance: ${availableToken}`}
       </Form.Text>
-      <a role="button" className={styles.maxButton} onClick={handleMaxButtonClick}>
+      <a tabIndex={0} role="button" className={styles.maxButton} onClick={handleMaxButtonClick}>
         Max
       </a>
 

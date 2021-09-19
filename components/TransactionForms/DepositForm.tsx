@@ -46,7 +46,7 @@ export const DepositForm = () => {
       <Form.Text id="passwordHelpBlock" muted>
         {`Balance: ${availableToken}`}
       </Form.Text>
-      <a role="button" className={styles.maxButton} onClick={handleMaxButtonClick}>
+      <a tabIndex={0} role="button" className={styles.maxButton} onClick={handleMaxButtonClick}>
         Max
       </a>
 
