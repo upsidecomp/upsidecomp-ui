@@ -4,7 +4,7 @@ import { Layout } from '@components/layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
 import type { NextPage } from 'next'
 import * as React from 'react'
-import { Button, Col, Modal, Row } from 'react-bootstrap'
+import { Col, Modal, Row } from 'react-bootstrap'
 
 import styles from './home.module.scss'
 
