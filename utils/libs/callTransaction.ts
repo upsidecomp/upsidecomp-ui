@@ -1,6 +1,4 @@
 import { ethers } from 'ethers'
-
-import { toast } from '../hooks/useToast'
 import { parseNumString } from 'utils/libs/parseNumString'
 
 const GAS_MULTIPLIER = 1.15
@@ -63,9 +61,12 @@ export const callTransaction = async (
   }
 
   if (includesGasLimitParam) {
-    transactionRequest["gasLimit"] = gasLimit
+    transactionRequest['gasLimit'] = gasLimit
   } else if (gasEstimate) {
-    transactionRequest["gasLimit"] = parseNumString(Math.round(gasEstimate.toNumber() * GAS_MULTIPLIER).toString(), 'wei')
+    transactionRequest['gasLimit'] = parseNumString(
+      Math.round(gasEstimate.toNumber() * GAS_MULTIPLIER).toString(),
+      'wei',
+    )
   }
 
   try {
@@ -90,7 +91,7 @@ export const callTransaction = async (
       completed: true,
     }))
 
-    toast.success(`"${txName}" transaction successful!`)
+    return `"${txName}" transaction successful!`
   } catch (e) {
     console.error(e)
 
@@ -103,8 +104,8 @@ export const callTransaction = async (
         cancelled: true,
       }))
 
-      toast.warn('Transaction cancelled')
       // You cancelled the transaction
+      throw new Error('Transaction cancelled')
     } else {
       setTx((tx: any) => ({
         ...tx,
@@ -112,8 +113,8 @@ export const callTransaction = async (
         error: true,
       }))
 
-      toast.error(`Error with "${txName}" - See JS Console for details`)
       console.error(e.message)
+      throw new Error(`Error with "${txName}" - See JS Console for details`)
     }
   }
 }

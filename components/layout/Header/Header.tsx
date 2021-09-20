@@ -1,5 +1,3 @@
-// todo: remove
-import { Deposit } from '@components/layout/Interactions/Deposit'
 import { ethers } from 'ethers'
 import * as React from 'react'
 import { Button, Container, Navbar } from 'react-bootstrap'
@@ -31,9 +29,8 @@ export const Header = (props: HeaderProps) => {
     const init = async () => {
       // @ts-ignore
       if (typeof window.ethereum !== 'undefined') {
-        // @ts-ignore
-        const address = window.ethereum.selectedAddress
-        setAccountAddress(address || '')
+        const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+        setAccountAddress(account)
 
         // @ts-ignore
         provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
@@ -68,7 +65,6 @@ export const Header = (props: HeaderProps) => {
           {accountAddress !== '' && <Navbar.Text>Signed in as: {accountAddress}</Navbar.Text>}
         </Navbar.Collapse>
       </Container>
-      <Deposit usersAddress={accountAddress} />
     </Navbar>
   )
 }
