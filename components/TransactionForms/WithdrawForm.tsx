@@ -7,6 +7,7 @@ import BanklessPrizePoolAbi from '@upsidecomp/upsidecomp-contracts-bankless-core
 import { usePrizePoolContracts } from '@utils/hooks/usePrizePoolContracts'
 import { callTransaction } from '@utils/libs/callTransaction'
 import { parseNumString } from '@utils/libs/parseNumString'
+import { useProvider } from 'utils/hooks/useProvider'
 
 import styles from './WithdrawForm.module.scss'
 
@@ -56,54 +57,37 @@ export const WithdrawForm = () => {
 
         let prizePoolAddress: string
         let ticketAddress: string
-        let prizePoolAbi : ethers.ContractInterface
         if (typeof prizePoolContracts !== 'undefined') {
           prizePoolAddress = prizePoolContracts.prizePool.address
           ticketAddress = prizePoolContracts.ticket.address
-          prizePoolAbi = prizePoolContracts.prizePool.contract
         }
-
-        const userAddress = window.ethereum.selectedAddress
-
-        const prizePoolContract: ethers.Contract = new ethers.Contract(prizePoolAddress, prizePoolAbi, provider)
-        const prizePoolContractSigner: ethers.Contract = prizePoolContract.connect(signer)
-        const feeTx: ethers.ContractTransaction = await prizePoolContractSigner.calculateEarlyExitFee(userAddress, ERC20_CONTRACTS.bank, withdrawAmountBN)
-        const feeTxReceipt: ethers.ContractReceipt = await feeTx.wait()
-        console.log("feeTxReceipt: ", feeTxReceipt)
 
         // NOTE: Approval event is based on event of transaction receipt
         // and not from polling
-        // const tx: ethers.ContractTransaction = await upBankWithSigner.approve(prizePoolAddress, withdrawAmountBN) //
-        // const txReceipt: ethers.ContractReceipt = await tx.wait()
-        // const event = txReceipt.events?.find(event => event.event === 'Approval')
+        const tx: ethers.ContractTransaction = await upBankWithSigner.approve(prizePoolAddress, withdrawAmountBN) //
+        const txReceipt: ethers.ContractReceipt = await tx.wait()
+        const event = txReceipt.events?.find(event => event.event === 'Approval')
 
-        // if (event) {
-        //   const referrer = ethers.constants.AddressZero // TODO
-        //   const userAddress = window.ethereum.selectedAddress
-          //
-          // const prizePoolContract: ethers.Contract = new ethers.Contract(prizePoolAddress, prizePoolAbi, provider)
-          // const prizePoolContractSigner: ethers.Contract = prizePoolContract.connect(signer)
-          // const feeTx: ethers.ContractTransaction = await prizePoolContractSigner.calculateEarlyExitFee(userAddress, ERC20_CONTRACTS.bank, withdrawAmountBN)
-          // const feeTxReceipt: ethers.ContractReceipt = await feeTx.wait()
-          // console.log("feeTxReceipt: ", feeTxReceipt)
+        if (event) {
+          const exitFee = ethers.constants.AddressZero // TODO
+          const userAddress = window.ethereum.selectedAddress
+          const params = [userAddress, withdrawAmountBN, ticketAddress, exitFee]
 
-          // const params = [userAddress, withdrawAmountBN, ticketAddress, referrer]
-          //
-          // const response = await callTransaction(
-          //   setTx,
-          //   provider,
-          //   userAddress,
-          //   prizePoolAddress,
-          //   BanklessPrizePoolAbi,
-          //   'withdrawInstantlyFrom',
-          //   'Withdraw',
-          //   params,
-          // )
-          // const balance = await upBankContract.balanceOf(userAddress)
-          // setAvailableToken(balance)
-          // setWithdrawAmount(0)
-          // setSuccessMessage(response)
-        // }
+          const response = await callTransaction(
+            setTx,
+            provider,
+            userAddress,
+            prizePoolAddress,
+            BanklessPrizePoolAbi,
+            'withdrawInstantlyFrom',
+            'Withdraw',
+            params,
+          )
+          const balance = await upBankContract.balanceOf(userAddress)
+          setAvailableToken(balance)
+          setWithdrawAmount(0)
+          setSuccessMessage(response)
+        }
         setLoading(false)
       }
     } catch (error) {
