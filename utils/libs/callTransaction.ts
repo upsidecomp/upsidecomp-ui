@@ -7,7 +7,7 @@ const GAS_MULTIPLIER = 1.15
 // the contract address
 export const callTransaction = async (
   setTx: any,
-  provider: ethers.providers.Web3Provider,
+  provider: any,
   usersAddress: string,
   contractAddress: string,
   contractAbi: any,
