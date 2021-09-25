@@ -7,13 +7,13 @@ import { ethers } from 'ethers'
 import * as React from 'react'
 import { Alert, Button, Form, InputGroup } from 'react-bootstrap'
 import { ERC20_CONTRACTS } from 'utils/constant'
-import { useProvider } from 'utils/hooks/useProvider'
 
 import styles from './WithdrawForm.module.scss'
 
 export const WithdrawForm = () => {
   const [availableToken, setAvailableToken] = React.useState('0')
   const [withdrawAmount, setWithdrawAmount] = React.useState(0)
+  const [withdrawAmountText, setWithdrawAmountText] = React.useState('0')
   const [loading, setLoading] = React.useState(false)
   const [errorMessage, setErrrorMessage] = React.useState('')
   const [successMessage, setSuccessMessage] = React.useState('')
@@ -84,8 +84,9 @@ export const WithdrawForm = () => {
             params,
           )
           const balance = await upBankContract.balanceOf(userAddress)
-          setAvailableToken(balance)
+          setAvailableToken(ethers.utils.formatUnits(balance))
           setWithdrawAmount(0)
+          setWithdrawAmountText('0')
           setSuccessMessage(response)
         }
         setLoading(false)
@@ -101,9 +102,12 @@ export const WithdrawForm = () => {
       <div className={styles.subtitle}>Please input how much upBANK token you want to withdraw</div>
       <InputGroup hasValidation>
         <Form.Control
-          value={withdrawAmount}
+          value={withdrawAmountText}
           onChange={e => {
-            setWithdrawAmount(e.currentTarget.value !== '' ? parseFloat(e.currentTarget.value) : 0)
+            setWithdrawAmountText(e.currentTarget.value)
+            if (e.currentTarget.value !== '') {
+              setWithdrawAmount(parseFloat(e.currentTarget.value))
+            }
           }}
           type="number"
           required
@@ -122,8 +126,8 @@ export const WithdrawForm = () => {
         onClick={handleConfirmButtonClick}
         className={styles.confirmButton}
         variant="secondary"
-        disabled={withdrawAmount === 0}>
-        {withdrawAmount === 0 ? 'Enter an amount' : 'Confirm'}
+        disabled={withdrawAmount === 0 || loading}>
+        {withdrawAmount === 0 ? 'Enter an amount' : loading ? 'Processing...' : 'Confirm'}
       </Button>
       {successMessage !== '' && <Alert variant="success">{successMessage}</Alert>}
       {errorMessage !== '' && <Alert variant="danger">{errorMessage}</Alert>}
