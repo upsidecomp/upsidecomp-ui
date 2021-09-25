@@ -13,6 +13,7 @@ import styles from './DepositForm.module.scss'
 export const DepositForm = () => {
   const [availableToken, setAvailableToken] = React.useState('0')
   const [depositAmount, setDepositAmount] = React.useState(0)
+  const [depositAmountText, setDepositAmountText] = React.useState('0')
   const [loading, setLoading] = React.useState(false)
   const [errorMessage, setErrrorMessage] = React.useState('')
   const [successMessage, setSuccessMessage] = React.useState('')
@@ -87,8 +88,9 @@ export const DepositForm = () => {
             params,
           )
           const balance = await bankContract.balanceOf(userAddress)
-          setAvailableToken(balance)
+          setAvailableToken(ethers.utils.formatUnits(balance))
           setDepositAmount(0)
+          setDepositAmountText('0')
           setSuccessMessage(response)
         }
         setLoading(false)
@@ -106,9 +108,12 @@ export const DepositForm = () => {
         <InputGroup hasValidation>
           <Form.Control
             type="number"
-            value={depositAmount}
+            value={depositAmountText}
             onChange={e => {
-              setDepositAmount(e.currentTarget.value !== '' ? parseFloat(e.currentTarget.value) : 0)
+              setDepositAmountText(e.currentTarget.value)
+              if (e.currentTarget.value !== '') {
+                setDepositAmount(parseFloat(e.currentTarget.value))
+              }
             }}
             required
           />

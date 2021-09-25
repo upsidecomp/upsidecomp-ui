@@ -1,4 +1,4 @@
-@import '../node_modules/bootstrap/scss/functions';
+@import '~node_modules/bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 @import '~bootstrap/scss/mixins';
 
@@ -33,6 +33,15 @@
   width: 400px;
   display: flex;
   flex-direction: column;
+}
+
+@include media-breakpoint-only(md) {
+  .nftImage {
+    padding: 0 4em 8em;
+    img {
+      width: 100%;
+    }
+  }
 }
 
 @include media-breakpoint-only(xs) {

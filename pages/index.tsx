@@ -17,7 +17,7 @@ const data = {
   },
   competition: {
     totalDeposit: 100000,
-    endDate: new Date('2021-10-01 23:59:59'),
+    endDate: new Date('2021-10-31 23:59:59'),
   },
 }
 
