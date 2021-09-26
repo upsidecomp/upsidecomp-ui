@@ -1,4 +1,6 @@
-# UpsideCompetition UI
+# Upside Competition UI
+
+A UI for Upside NFT launchpad
 
 ## Getting Started
 
