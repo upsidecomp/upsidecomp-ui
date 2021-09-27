@@ -36,7 +36,7 @@ const _fetchPrizePoolAndPrizeStrategy = async (provider: ethers.providers.Infura
   const prizePoolContract = contract('prizePoolData', BanklessPrizePoolAbi, prizePoolAddress)
   // @ts-ignore
   const prizePoolValues = await batch(provider, prizePoolContract.prizeStrategy())
-  const prizeStrategyAddres = prizePoolValues.prizePoolData.prizeStrategy[0].toLowerCase()
+  const prizeStrategyAddress = prizePoolValues.prizePoolData.prizeStrategy[0].toLowerCase()
 
   // first requests
   const firstRequests = []
@@ -46,7 +46,7 @@ const _fetchPrizePoolAndPrizeStrategy = async (provider: ethers.providers.Infura
 
   // second
   const secondRequests = []
-  const prizeStrategyContract = contract('prizeStrategyData', prizeStrategyAbi, prizeStrategyAddres)
+  const prizeStrategyContract = contract('prizeStrategyData', prizeStrategyAbi, prizeStrategyAddress)
   secondRequests.push()
   secondRequests.push(
     prizeStrategyContract
@@ -82,7 +82,7 @@ const _fetchPrizePoolAndPrizeStrategy = async (provider: ethers.providers.Infura
       version: '',
     },
     prizeStrategy: {
-      address: prizeStrategyAddres,
+      address: prizeStrategyAddress,
       contract: prizeStrategyAbi,
       version: '',
     },
