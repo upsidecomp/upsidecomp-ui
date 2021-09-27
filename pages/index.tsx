@@ -2,19 +2,18 @@ import { DepositInformation, Organiser } from '@components/Competitions'
 import { UpsideButton } from '@components/Form'
 import { Layout } from '@components/layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
+import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
+import { ethers } from 'ethers'
 import type { NextPage } from 'next'
 import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import { ERC20_CONTRACTS, POOL_ALIASES } from 'utils/constant'
-import { ethers } from 'ethers'
-import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
-
 
 import styles from './home.module.scss'
 
 const data = {
-  nftImage: '/images/nft-example-2.png',
+  nftImage: '/images/nft-example-1.png',
   nftTitle: 'Bored Ape Yatch Club #3651',
   organiser: {
     avatarUrl: '/images/bankless-dao-logo.svg',
@@ -29,8 +28,7 @@ const Home: NextPage = () => {
   if (!prizeStrategyIsFetched) return null
 
   let endDate: Date
-  let totalDeposit: string
-  let prizeStrategyAddress: string
+  let totalDeposit: number
   if (typeof prizeStrategyContracts !== 'undefined') {
     endDate = prizeStrategyContracts.prizePeriodEndAt
     totalDeposit = prizeStrategyContracts.totalDeposit

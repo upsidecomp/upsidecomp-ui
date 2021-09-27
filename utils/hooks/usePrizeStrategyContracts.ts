@@ -27,17 +27,17 @@ export const usePrizeStrategyContracts = () => {
   )
 }
 
-const _fetchPrizeStrategyData = async (provider: ethers.providers.InfuraProvider, prizeStrategyAddress: string, prizePoolAddress: string) => {
+const _fetchPrizeStrategyData = async (
+  provider: ethers.providers.InfuraProvider,
+  prizeStrategyAddress: string,
+  prizePoolAddress: string,
+) => {
   const prizeStrategyAbi = BanklessMultipleWinners
 
   // first
   const firstRequest = []
   const prizeStrategyContract = contract('prizeStrategyData', prizeStrategyAbi, prizeStrategyAddress)
-  firstRequest.push(
-    prizeStrategyContract
-      .prizePeriodEndAt()
-      .prizePool()
-  )
+  firstRequest.push(prizeStrategyContract.prizePeriodEndAt().prizePool())
 
   const { prizeStrategyData } = await batch(provider, ...firstRequest)
 
@@ -47,11 +47,11 @@ const _fetchPrizeStrategyData = async (provider: ethers.providers.InfuraProvider
   const balance = await bankContract.balanceOf(prizePoolAddress)
 
   const data: any = {
-    prizePeriodEndAt: new Date(prizeStrategyData["prizePeriodEndAt"][0].toNumber() * 1000),
-    totalDeposit: Number(ethers.utils.formatUnits(balance)).toFixed(2)
+    prizePeriodEndAt: new Date(prizeStrategyData['prizePeriodEndAt'][0].toNumber() * 1000),
+    totalDeposit: Number(ethers.utils.formatUnits(balance)).toFixed(2),
   }
 
   return {
-    ...data
+    ...data,
   }
 }

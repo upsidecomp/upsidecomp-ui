@@ -22,13 +22,15 @@ export const TransactionForm = () => {
         <Button
           onClick={handleDepositButtonClick}
           className={styles.tabButton}
-          variant={formMode === 'deposit' ? 'warning' : 'outline-warning'}>
+          variant={formMode === 'deposit' ? 'warning' : 'outline-warning'}
+        >
           Deposit
         </Button>
         <Button
           onClick={handleWithdrawButtonClick}
           className={styles.tabButton}
-          variant={formMode === 'withdraw' ? 'warning' : 'outline-warning'}>
+          variant={formMode === 'withdraw' ? 'warning' : 'outline-warning'}
+        >
           Withdraw
         </Button>
       </div>

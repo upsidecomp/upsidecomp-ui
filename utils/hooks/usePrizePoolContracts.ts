@@ -54,7 +54,7 @@ const _fetchPrizePoolAndPrizeStrategy = async (provider: ethers.providers.Infura
       .tokenListener() // comptroller
       .rng()
       .sponsorship()
-      .ticket()
+      .ticket(),
   )
 
   const { prizeStrategyData, registry } = await batch(provider, ...secondRequests)
@@ -82,7 +82,7 @@ const _fetchPrizePoolAndPrizeStrategy = async (provider: ethers.providers.Infura
       version: '',
     },
     prizeStrategy: {
-      address: prizeStrategyAddresss,
+      address: prizeStrategyAddress,
       contract: prizeStrategyAbi,
       version: '',
     },
