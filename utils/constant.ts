@@ -8,6 +8,7 @@ export const POOL_ALIASES = {
     chainId: 4,
     networkName: 'rinkeby',
     poolAddress: '0x3fF78cA9Fbaff46C121F5AB40a3F302f26be964D',
+    prizeStrategyAddress: '0xa96d11420668f6ebc9b51859e4018662f8c762c3'
   },
 }
 
@@ -45,6 +46,7 @@ export const NO_REFETCH_QUERY_OPTIONS = Object.freeze({
 
 export const QUERY_KEYS = {
   fetchPoolData: 'fetchPoolData',
+  fetchPrizeStrategyData: 'fetchPrizeStrategyData'
 }
 
 export const ERC20_CONTRACTS = {

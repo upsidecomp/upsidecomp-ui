@@ -5,24 +5,36 @@ import { TransactionForm } from '@components/TransactionForms'
 import type { NextPage } from 'next'
 import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
+import { ERC20_CONTRACTS, POOL_ALIASES } from 'utils/constant'
+import { ethers } from 'ethers'
+import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
+import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
+
 
 import styles from './home.module.scss'
 
 const data = {
-  nftImage: '/images/nft-example.svg',
+  nftImage: '/images/nft-example-2.png',
   nftTitle: 'Bored Ape Yatch Club #3651',
   organiser: {
     avatarUrl: '/images/bankless-dao-logo.svg',
     name: 'BanklessDAO',
   },
-  competition: {
-    totalDeposit: 100000,
-    endDate: new Date('2021-10-31 23:59:59'),
-  },
 }
 
 const Home: NextPage = () => {
   const [openModal, setOpenModal] = React.useState(false)
+  const { data: prizeStrategyContracts, isFetched: prizeStrategyIsFetched } = usePrizeStrategyContracts()
+
+  if (!prizeStrategyIsFetched) return null
+
+  let endDate: Date
+  let totalDeposit: string
+  let prizeStrategyAddress: string
+  if (typeof prizeStrategyContracts !== 'undefined') {
+    endDate = prizeStrategyContracts.prizePeriodEndAt
+    totalDeposit = prizeStrategyContracts.totalDeposit
+  }
 
   const handleDepositButtonClick = () => {
     setOpenModal(true)
@@ -49,7 +61,7 @@ const Home: NextPage = () => {
             <div className={styles.container}>
               <div className={styles.title}>{data.nftTitle}</div>
               <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
-              <DepositInformation totalDeposit={data.competition.totalDeposit} endDate={data.competition.endDate} />
+              <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
               <div className={styles.buttonContainer}>
                 <UpsideButton onClick={handleDepositButtonClick}>Deposit / Withdraw</UpsideButton>
               </div>
