@@ -7,8 +7,8 @@ export const POOL_ALIASES = {
     alias: 'bankless-test',
     chainId: 4,
     networkName: 'rinkeby',
-    poolAddress: '0x3fF78cA9Fbaff46C121F5AB40a3F302f26be964D',
-    prizeStrategyAddress: '0xa96d11420668f6ebc9b51859e4018662f8c762c3',
+    poolAddress: '0x29c4B18a595E5e78C7Bcd2aDcCE881F677FF2Ab7',
+    prizeStrategyAddress: '0x4C0216192e671e2E767236045067E48762Ec6c96',
   },
 }
 
@@ -51,5 +51,5 @@ export const QUERY_KEYS = {
 
 export const ERC20_CONTRACTS = {
   bank: '0x1CF12Dbe0d132EEddAc7ce9a0008e0e3362656cf',
-  upBank: '0x0f930dafde1f66b6a5a31a76469fa3e348cf14d8',
+  upBank: '0xc3D09C8BF66f6831c3bfDBC9fe4BD11015Ecf800',
 }
