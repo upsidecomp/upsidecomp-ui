@@ -20,7 +20,7 @@
     "@pooltogether/hooks": "^0.2.11",
     "@pooltogether/pooltogether-contracts": "^3.4.5",
     "@pooltogether/pooltogether-rng-contracts": "^1.4.0",
-    "@upsidecomp/upsidecomp-contracts-bankless-core": "^1.0.1",
+    "@upsidecomp/upsidecomp-contracts-bankless-core": "1.0.2",
     "bootstrap": "^5.1.1",
     "dayjs": "^1.10.7",
     "ethers": "^5.4.7",

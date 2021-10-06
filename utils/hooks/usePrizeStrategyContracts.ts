@@ -37,18 +37,37 @@ const _fetchPrizeStrategyData = async (
   // first
   const firstRequest = []
   const prizeStrategyContract = contract('prizeStrategyData', prizeStrategyAbi, prizeStrategyAddress)
-  firstRequest.push(prizeStrategyContract.prizePeriodEndAt().prizePool())
+  firstRequest.push(
+    prizeStrategyContract
+      .prizePeriodEndAt()
+      .prizePool()
+      .currentPrizeAddresses()
+  )
 
-  const { prizeStrategyData } = await batch(provider, ...firstRequest)
+  const { prizeStrategyData: firstRequestData } = await batch(provider, ...firstRequest)
 
   // second
+  const prizeAddresses = firstRequestData['currentPrizeAddresses'][0]
   const secondRequest = []
+  secondRequest.push(
+    prizeStrategyContract
+      .currentPrizeTokenIds(prizeAddresses[0]) // only queries a single prize address token ids
+  )
+  const { prizeStrategyData: secondRequestData } = await batch(provider, ...secondRequest)
+
+  // bank
   const bankContract = new ethers.Contract(ERC20_CONTRACTS.bank, ERC20Upgradable, provider)
   const balance = await bankContract.balanceOf(prizePoolAddress)
 
   const data: any = {
-    prizePeriodEndAt: new Date(prizeStrategyData['prizePeriodEndAt'][0].toNumber() * 1000),
+    prizePeriodEndAt: new Date(firstRequestData['prizePeriodEndAt'][0].toNumber() * 1000),
     totalDeposit: Number(ethers.utils.formatUnits(balance)).toFixed(2),
+    prizes: [{
+      address: prizeAddresses[0],
+      tokenIds: secondRequestData["currentPrizeTokenIds"][0].map((bn) => {
+        return bn.toNumber()
+      })
+    }]
   }
 
   return {

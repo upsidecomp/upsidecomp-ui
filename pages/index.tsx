@@ -29,9 +29,11 @@ const Home: NextPage = () => {
 
   let endDate: Date
   let totalDeposit: number
+  let prizes: Array
   if (typeof prizeStrategyContracts !== 'undefined') {
     endDate = prizeStrategyContracts.prizePeriodEndAt
     totalDeposit = prizeStrategyContracts.totalDeposit
+    prizes = prizeStrategyContracts.prizes
   }
 
   const handleDepositButtonClick = () => {
