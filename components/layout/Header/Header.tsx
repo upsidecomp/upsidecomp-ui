@@ -1,6 +1,8 @@
+import { useAuth } from '@hooks/useAuth'
+import cx from 'classnames'
 import { ethers } from 'ethers'
 import * as React from 'react'
-import { Button, Container, Navbar } from 'react-bootstrap'
+import { Button, Container, Navbar, NavDropdown } from 'react-bootstrap'
 
 import styles from './Header.module.scss'
 
@@ -9,62 +11,53 @@ export type HeaderProps = {
 }
 
 export const Header = (props: HeaderProps) => {
-  const [accountAddress, setAccountAddress] = React.useState('')
-
-  let provider
-
-  const connectButtonOnClick = async () => {
-    // @ts-ignore
-    if (typeof window.ethereum !== 'undefined') {
-      // @ts-ignore
-      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-      // @ts-ignore
-      provider = new ethers.providers.Web3Provider(window.ethereum)
-
-      setAccountAddress(account)
-    }
-  }
-
-  React.useEffect(() => {
-    const init = async () => {
-      // @ts-ignore
-      if (typeof window.ethereum !== 'undefined') {
-        const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        setAccountAddress(account)
-
-        // @ts-ignore
-        provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-
-        // force refresh page on network change
-        provider.on('network', (newNetwork, oldNetwork) => {
-          // When a Provider makes its initial connection, it emits a "network"
-          // event with a null oldNetwork along with the newNetwork. So, if the
-          // oldNetwork exists, it represents a changing network
-          if (oldNetwork) {
-            window.location.reload()
-          }
-        })
-      }
-    }
-    init()
-  }, [provider])
+  const {
+    isMainnet,
+    connectToMetamask,
+    disconnectFromWallet,
+    networkName,
+    accountAddress,
+    upBankTokenAmount,
+    bankTokenAmount,
+  } = useAuth()
 
   return (
-    <Navbar bg="light" expand="lg" fixed="top" className={styles.navbarArea}>
-      <Container>
-        <Navbar.Brand href="/">
-          <img className={styles.logo} src="/images/upside-logo.png" alt="Upside Competition" />
-        </Navbar.Brand>
-        <Navbar.Toggle />
-        <Navbar.Collapse className="justify-content-end">
-          {accountAddress === '' && (
-            <Button onClick={connectButtonOnClick} variant="outline-secondary">
-              Connect Wallet
-            </Button>
-          )}
-          {accountAddress !== '' && <Navbar.Text>Signed in as: {accountAddress}</Navbar.Text>}
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+    <>
+      {!isMainnet && networkName !== '' && (
+        <div
+          className={
+            styles.warningContainer
+          }>{`You're currently connected to ${networkName?.toUpperCase()} network`}</div>
+      )}
+      <Navbar
+        bg="light"
+        expand="lg"
+        fixed="top"
+        className={cx(styles.navbarArea, {
+          [styles.navbarInTestnet]: !isMainnet && networkName !== '',
+        })}>
+        <Container>
+          <Navbar.Brand href="/">
+            <img className={styles.logo} src="/images/upside-logo.png" alt="Upside Competition" />
+          </Navbar.Brand>
+          <Navbar.Toggle />
+          <Navbar.Collapse className="justify-content-end">
+            {accountAddress === '' && (
+              <Button onClick={connectToMetamask} variant="outline-secondary">
+                Connect Wallet
+              </Button>
+            )}
+            {accountAddress !== '' && (
+              <NavDropdown
+                title={`Connected ${accountAddress.slice(0, 5)}....${accountAddress.slice(-5)}`}
+                id="navbarScrollingDropdown">
+                <NavDropdown.Item>{`${ethers.utils.formatUnits(bankTokenAmount)} $BANK`}</NavDropdown.Item>
+                <NavDropdown.Item>{`${ethers.utils.formatUnits(upBankTokenAmount)} $upBANK`}</NavDropdown.Item>
+              </NavDropdown>
+            )}
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </>
   )
 }

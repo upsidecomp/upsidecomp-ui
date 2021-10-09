@@ -7,6 +7,24 @@
   transition: all 0.3s ease-out 0s;
 }
 
+.warningContainer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: #F2634F;
+  color: #ffffff;
+  font-size: 1.2em;
+  height: 50px;
+}
+
+.navbarInTestnet {
+  top: 50px;
+}
+
 .logo {
   width: 40px;
 }
