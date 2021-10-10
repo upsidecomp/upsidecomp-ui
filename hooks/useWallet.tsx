@@ -1,131 +1,152 @@
 import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
 import { ALLOWED_NETWORK, ERC20_CONTRACTS } from '@utils/constant'
+import { getSelectedWallet, removeSelectedWallet, setSelectedWallet } from '@utils/cookies'
+import Onboard from 'bnc-onboard'
+import { API, Wallet } from 'bnc-onboard/dist/src/interfaces'
 import { ethers } from 'ethers'
 import * as React from 'react'
 
-interface Metadata {
-  connectToMetamask: () => void
-  disconnectFromWallet: () => void
-  accountAddress: string
-  bankTokenAmount: unknown
-  upBankTokenAmount: unknown
-  networkName: string
-  isMainnet: boolean
+interface WalletMeta {
+  connect: () => void
+  disconnect: () => void
+  address: string
+  bankBalance: unknown
+  upbankBalance: unknown
+  network: number
+  isWalletConnected: boolean
 }
 
-const AuthContext = React.createContext<Metadata>({
-  connectToMetamask: null,
-  disconnectFromWallet: null,
-  accountAddress: '',
-  bankTokenAmount: 0,
-  upBankTokenAmount: 0,
-  networkName: '',
-  isMainnet: false,
-})
+// @ts-expect-error
+const WalletContext = React.createContext<WalletMeta>({})
 
-export function AuthProvider({ children }) {
-  const meta = useMetamaskAuth()
+export function WalletProvider({ children }) {
+  const meta = useInitialWallet()
 
-  return <AuthContext.Provider value={meta}>{children}</AuthContext.Provider>
+  return <WalletContext.Provider value={meta}>{children}</WalletContext.Provider>
 }
 
-export const useAuth = () => {
-  return React.useContext(AuthContext)
+export const useWallet = () => {
+  return React.useContext(WalletContext)
 }
 
-const useMetamaskAuth = (): Metadata => {
-  const [provider, setProvider] = React.useState(undefined)
+const useInitialWallet = (): WalletMeta => {
+  const [provider, setProvider] = React.useState<ethers.providers.Web3Provider>(undefined)
+  const [onboard, setOnboard] = React.useState<API>(undefined)
+  const [wallet, setWallet] = React.useState<Wallet>(undefined)
   const [address, setAddress] = React.useState('')
+  const [network, setNetwork] = React.useState<number>(undefined)
   const [bankBalance, setBankBalance] = React.useState<string>(undefined)
   const [upbankBalance, setUpbankBalance] = React.useState<string>(undefined)
-  const [network, setNetwor] = React.useState('')
-  const [isMainnet, setIsMainnet] = React.useState(false)
 
-  console.log('Provider: ', provider)
+  const getOnboard = async () => {
+    const subscriptions = {
+      address: setAddress,
+      network: setNetwork,
+      balance: balance => {
+        setMetadata()
+      },
+      wallet: (wallet: Wallet) => {
+        if (wallet.provider) {
+          setWallet(wallet)
+          setProvider(new ethers.providers.Web3Provider(wallet.provider, 'any'))
+          setSelectedWallet(wallet.name)
+        } else {
+          setWallet(undefined)
+          setProvider(undefined)
+          removeSelectedWallet()
+        }
+      },
+    }
+
+    return Onboard({
+      hideBranding: true,
+      networkId: 4, // Hardcode to Rinkeby for now
+      darkMode: true,
+      subscriptions,
+      walletSelect: {
+        wallets: [{ walletName: 'metamask', preferred: true }],
+      },
+      walletCheck: [{ checkName: 'connect' }, { checkName: 'accounts' }, { checkName: 'network' }],
+    })
+  }
+
+  const handleLoadOnboard = async () => {
+    const _onboard = await getOnboard()
+    _onboard.walletSelect('MetaMask')
+    setOnboard(_onboard)
+  }
 
   React.useEffect(() => {
-    const init = async () => {
-      // @ts-ignore
-      if (typeof window.ethereum !== 'undefined') {
-        const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        const ethProvider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-
-        setAccountAddress(account)
-        setProvider(ethProvider)
-      }
-    }
-    init()
+    handleLoadOnboard()
   }, [])
 
   React.useEffect(() => {
-    const checkNetwork = (newNetwork, oldNetwork) => {
-      // When a Provider makes its initial connection, it emits a "network"
-      // event with a null oldNetwork along with the newNetwork. So, if the
-      // oldNetwork exists, it represents a changing network
-      if (oldNetwork) {
-        window.location.reload()
+    const init = async () => {
+      onboard.walletReset()
+      const selectedWallet = getSelectedWallet()
+      if (selectedWallet && selectedWallet !== '') {
+        onboard.walletSelect(selectedWallet)
       }
     }
 
-    const setMetadata = async () => {
-      const signer = provider.getSigner()
-      const network = await provider.getNetwork()
-      const myAddress = await signer.getAddress()
-      setNetworkName(network.name)
-      setIsMainnet(network.name === 'homestead')
+    if (onboard) {
+      init()
+    }
+  }, [onboard])
 
-      if (ALLOWED_NETWORK.includes(network.name)) {
-        try {
-          const bankContract = new ethers.Contract(ERC20_CONTRACTS.bank, ERC20Upgradable, provider)
-          const upBankContract = new ethers.Contract(ERC20_CONTRACTS.upBank, ERC20Upgradable, provider)
-          const bankBalance = await bankContract.balanceOf(myAddress)
-          const upBankBalance = await upBankContract.balanceOf(myAddress)
-          setBankTokenAmount(bankBalance)
-          setUpBankTokenAmount(upBankBalance)
-        } catch (error) {
-          console.log('Error: ', error)
-        }
+  const setMetadata = React.useCallback(async () => {
+    try {
+      console.log('Update the metadata')
+      const bankContract = new ethers.Contract(ERC20_CONTRACTS.bank, ERC20Upgradable, provider)
+      const upBankContract = new ethers.Contract(ERC20_CONTRACTS.upBank, ERC20Upgradable, provider)
+      const bankBalance = await bankContract.balanceOf(address)
+      const upBankBalance = await upBankContract.balanceOf(address)
+      setBankBalance(ethers.utils.formatUnits(bankBalance))
+      setUpbankBalance(ethers.utils.formatUnits(upBankBalance))
+    } catch (error) {
+      console.log('Error: ', error)
+      setBankBalance('0.00')
+      setUpbankBalance('0.00')
+    }
+  }, [provider, address])
+
+  React.useEffect(() => {
+    const runMetadata = async () => {
+      await setMetadata()
+    }
+    if (provider && address !== '') {
+      runMetadata()
+    }
+  }, [provider, address, network])
+
+  const connect = React.useCallback(async () => {
+    try {
+      // Let user select wallet
+      const walletSelected = await onboard.walletSelect('MetaMask')
+      if (!walletSelected) {
+        return
       }
-    }
 
-    if (provider) {
-      // force refresh page on network change
-      provider.on('network', checkNetwork)
-
-      setMetadata()
-
-      return () => {
-        provider.off('block', checkNetwork)
+      const walletIsReady = await onboard.walletCheck()
+      if (!walletIsReady) {
+        return
       }
+    } catch (e) {
+      console.warn('Onboard error')
     }
-  }, [provider])
+  }, [onboard])
 
-  const connectToMetamask = async () => {
-    // @ts-ignore
-    if (typeof window.ethereum !== 'undefined') {
-      // @ts-ignore
-      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-      // @ts-ignore
-      const ethProvider = new ethers.providers.Web3Provider(window.ethereum)
-
-      setProvider(ethProvider)
-      setAccountAddress(account)
-    }
-  }
-
-  const disconnectFromWallet = async () => {
-    if (typeof window.ethereum !== 'undefined') {
-      await provider.close()
-    }
-  }
+  const disconnect = React.useCallback(() => {
+    onboard.walletReset()
+  }, [onboard])
 
   return {
-    connectToMetamask,
-    disconnectFromWallet,
-    accountAddress,
-    bankTokenAmount,
-    upBankTokenAmount,
-    networkName,
-    isMainnet,
+    connect,
+    disconnect,
+    address,
+    bankBalance,
+    upbankBalance,
+    network,
+    isWalletConnected: Boolean(wallet) && Boolean(address),
   }
 }

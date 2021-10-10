@@ -20,13 +20,17 @@ export const WithdrawForm = () => {
 
   React.useEffect(() => {
     const init = async () => {
-      if (typeof window.ethereum !== 'undefined') {
-        const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-        const signer = provider.getSigner()
-        const upBankContract = new ethers.Contract(ERC20_CONTRACTS.upBank, ERC20Upgradable, provider)
-        const myAddress = await signer.getAddress()
-        const balance = await upBankContract.balanceOf(myAddress)
-        setAvailableToken(ethers.utils.formatUnits(balance))
+      try {
+        if (typeof window.ethereum !== 'undefined') {
+          const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+          const signer = provider.getSigner()
+          const upBankContract = new ethers.Contract(ERC20_CONTRACTS.upBank, ERC20Upgradable, provider)
+          const myAddress = await signer.getAddress()
+          const balance = await upBankContract.balanceOf(myAddress)
+          setAvailableToken(ethers.utils.formatUnits(balance))
+        }
+      } catch (error) {
+        // Do nothing here, most likely wrong error and can't fetch the balance
       }
     }
     init()
@@ -126,8 +130,7 @@ export const WithdrawForm = () => {
         onClick={handleConfirmButtonClick}
         className={styles.confirmButton}
         variant="secondary"
-        disabled={withdrawAmount === 0 || loading}
-      >
+        disabled={withdrawAmount === 0 || loading}>
         {withdrawAmount === 0 ? 'Enter an amount' : loading ? 'Processing...' : 'Confirm'}
       </Button>
       {successMessage !== '' && <Alert variant="success">{successMessage}</Alert>}

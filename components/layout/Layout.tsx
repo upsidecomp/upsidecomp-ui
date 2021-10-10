@@ -1,3 +1,5 @@
+import { useWallet } from '@hooks/useWallet'
+import cx from 'classnames'
 import Head from 'next/head'
 import * as React from 'react'
 import { Container } from 'react-bootstrap'
@@ -10,6 +12,7 @@ type Props = {
 }
 
 export const Layout = ({ children }: Props) => {
+  const { isWalletConnected, network } = useWallet()
   const description =
     'Win great prizes by saving in an insured digital wallet. The more money you save, the greater your chance to win!'
   return (
@@ -20,7 +23,12 @@ export const Layout = ({ children }: Props) => {
       </Head>
       <Container fluid className="p-4 vh-100">
         <Header />
-        <main className={styles.mainContent}>{children}</main>
+        <main
+          className={cx(styles.mainContent, {
+            [styles.inTestnet]: isWalletConnected && network !== 1,
+          })}>
+          {children}
+        </main>
       </Container>
     </>
   )

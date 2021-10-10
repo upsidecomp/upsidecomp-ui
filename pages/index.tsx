@@ -2,7 +2,7 @@ import { DepositInformation, Organiser } from '@components/Competitions'
 import { UpsideButton } from '@components/Form'
 import { Layout } from '@components/layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
-import { useAuth } from '@hooks/useAuth'
+import { useWallet } from '@hooks/useWallet'
 import type { NextPage } from 'next'
 import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
@@ -20,8 +20,8 @@ const data = {
 }
 
 const Home: NextPage = () => {
+  const { isWalletConnected } = useWallet()
   const [openModal, setOpenModal] = React.useState(false)
-  const { accountAddress } = useAuth()
   const { data: prizeStrategyContracts, isFetched: prizeStrategyIsFetched } = usePrizeStrategyContracts()
 
   if (!prizeStrategyIsFetched) return null
@@ -60,7 +60,7 @@ const Home: NextPage = () => {
               <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
               <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
               <div className={styles.buttonContainer}>
-                <UpsideButton disabled={accountAddress === ''} onClick={handleDepositButtonClick}>
+                <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
                   Deposit / Withdraw
                 </UpsideButton>
               </div>

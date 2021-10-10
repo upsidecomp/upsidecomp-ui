@@ -57,3 +57,9 @@ export const ERC20_CONTRACTS = {
 export const ALLOWED_NETWORK = process.env.NEXT_PUBLIC_ALLOWED_NETWORK
   ? process.env.NEXT_PUBLIC_ALLOWED_NETWORK.split(',')
   : []
+
+export const NETWORK_NAME = {
+  3: 'Ropsten',
+  4: 'Rinkeby',
+  5: 'Goerly',
+}

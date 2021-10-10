@@ -1,6 +1,6 @@
-import { useAuth } from '@hooks/useAuth'
+import { useWallet } from '@hooks/useWallet'
+import { NETWORK_NAME } from '@utils/constant'
 import cx from 'classnames'
-import { ethers } from 'ethers'
 import * as React from 'react'
 import { Button, Container, Navbar, NavDropdown } from 'react-bootstrap'
 
@@ -11,30 +11,23 @@ export type HeaderProps = {
 }
 
 export const Header = (props: HeaderProps) => {
-  const {
-    isMainnet,
-    connectToMetamask,
-    disconnectFromWallet,
-    networkName,
-    accountAddress,
-    upBankTokenAmount,
-    bankTokenAmount,
-  } = useAuth()
+  const { connect, disconnect, address, bankBalance, upbankBalance, network, isWalletConnected } = useWallet()
+
+  const isMainnet = network === 1
 
   return (
     <>
-      {!isMainnet && networkName !== '' && (
-        <div
-          className={
-            styles.warningContainer
-          }>{`You're currently connected to ${networkName?.toUpperCase()} network`}</div>
+      {isWalletConnected && !isMainnet && (
+        <div className={styles.warningContainer}>{`You're currently connected to ${NETWORK_NAME[
+          network
+        ]?.toUpperCase()} network`}</div>
       )}
       <Navbar
         bg="light"
         expand="lg"
         fixed="top"
         className={cx(styles.navbarArea, {
-          [styles.navbarInTestnet]: !isMainnet && networkName !== '',
+          [styles.navbarInTestnet]: isWalletConnected && !isMainnet,
         })}>
         <Container>
           <Navbar.Brand href="/">
@@ -42,18 +35,21 @@ export const Header = (props: HeaderProps) => {
           </Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
-            {accountAddress === '' && (
-              <Button onClick={connectToMetamask} variant="outline-secondary">
+            {isWalletConnected ? (
+              <NavDropdown
+                title={`Connected ${address.slice(0, 5)}....${address.slice(-5)}`}
+                id="navbarScrollingDropdown">
+                <NavDropdown.Item>{`${bankBalance} BANK`}</NavDropdown.Item>
+                <NavDropdown.Item>{`${upbankBalance} upBANK`}</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item role="button" onClick={disconnect}>
+                  Disconnect
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <Button onClick={connect} variant="outline-secondary">
                 Connect Wallet
               </Button>
-            )}
-            {accountAddress !== '' && (
-              <NavDropdown
-                title={`Connected ${accountAddress.slice(0, 5)}....${accountAddress.slice(-5)}`}
-                id="navbarScrollingDropdown">
-                <NavDropdown.Item>{`${ethers.utils.formatUnits(bankTokenAmount)} $BANK`}</NavDropdown.Item>
-                <NavDropdown.Item>{`${ethers.utils.formatUnits(upBankTokenAmount)} $upBANK`}</NavDropdown.Item>
-              </NavDropdown>
             )}
           </Navbar.Collapse>
         </Container>
