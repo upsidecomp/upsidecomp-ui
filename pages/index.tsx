@@ -30,7 +30,7 @@ const Home: NextPage = () => {
   let totalDeposit: number
   if (typeof prizeStrategyContracts !== 'undefined') {
     endDate = prizeStrategyContracts.prizePeriodEndAt
-    totalDeposit = prizeStrategyContracts.totalDeposit
+    totalDeposit = Number(prizeStrategyContracts.totalDeposit)
   }
 
   const handleDepositButtonClick = () => {
@@ -49,12 +49,12 @@ const Home: NextPage = () => {
           <h3 className={styles.mainHeading}>BanklessDAO NFT Giveaways</h3>
         </div>
         <Row>
-          <Col>
+          <Col xs={12} lg={6}>
             <div className={styles.nftImage}>
               <img src={data.nftImage} alt={data.nftTitle} />
             </div>
           </Col>
-          <Col>
+          <Col xs={12} lg={6}>
             <div className={styles.container}>
               <div className={styles.title}>{data.nftTitle}</div>
               <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />

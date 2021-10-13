@@ -38,7 +38,10 @@ export const WithdrawForm = () => {
 
   const handleMaxButtonClick = () => {
     setWithdrawAmount(availableToken !== '' ? parseFloat(availableToken) : 0)
+    setWithdrawAmountText(availableToken)
   }
+
+  const disableWithdrawButton = withdrawAmount === 0 || withdrawAmount > Number(availableToken)
 
   const [tx, setTx] = React.useState({
     inWallet: false,
@@ -101,6 +104,22 @@ export const WithdrawForm = () => {
     }
   }, [withdrawAmount])
 
+  const buttonLabel = React.useMemo(() => {
+    if (loading) {
+      return 'Processing...'
+    }
+
+    if (withdrawAmount === 0) {
+      return 'Enter an amount'
+    }
+
+    if (withdrawAmount > Number(availableToken)) {
+      return 'Withdraw exceeded the available token'
+    }
+
+    return 'Confirm'
+  }, [withdrawAmount, loading, availableToken])
+
   return (
     <Form className={styles.formContainer}>
       <div className={styles.subtitle}>Please input how much upBANK token you want to withdraw</div>
@@ -130,8 +149,8 @@ export const WithdrawForm = () => {
         onClick={handleConfirmButtonClick}
         className={styles.confirmButton}
         variant="secondary"
-        disabled={withdrawAmount === 0 || loading}>
-        {withdrawAmount === 0 ? 'Enter an amount' : loading ? 'Processing...' : 'Confirm'}
+        disabled={disableWithdrawButton || loading}>
+        {buttonLabel}
       </Button>
       {successMessage !== '' && <Alert variant="success">{successMessage}</Alert>}
       {errorMessage !== '' && <Alert variant="danger">{errorMessage}</Alert>}
