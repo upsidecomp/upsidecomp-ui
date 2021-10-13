@@ -2,12 +2,10 @@ import { DepositInformation, Organiser } from '@components/Competitions'
 import { UpsideButton } from '@components/Form'
 import { Layout } from '@components/layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
-import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
-import { ethers } from 'ethers'
+import { useWallet } from '@hooks/useWallet'
 import type { NextPage } from 'next'
 import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
-import { ERC20_CONTRACTS, POOL_ALIASES } from 'utils/constant'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
 
 import styles from './home.module.scss'
@@ -22,6 +20,7 @@ const data = {
 }
 
 const Home: NextPage = () => {
+  const { isWalletConnected } = useWallet()
   const [openModal, setOpenModal] = React.useState(false)
   const { data: prizeStrategyContracts, isFetched: prizeStrategyIsFetched } = usePrizeStrategyContracts()
 
@@ -61,7 +60,9 @@ const Home: NextPage = () => {
               <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
               <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
               <div className={styles.buttonContainer}>
-                <UpsideButton onClick={handleDepositButtonClick}>Deposit / Withdraw</UpsideButton>
+                <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
+                  Deposit / Withdraw
+                </UpsideButton>
               </div>
             </div>
           </Col>

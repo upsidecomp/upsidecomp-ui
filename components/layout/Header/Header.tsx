@@ -1,6 +1,8 @@
-import { ethers } from 'ethers'
+import { useWallet } from '@hooks/useWallet'
+import { NETWORK_NAME } from '@utils/constant'
+import cx from 'classnames'
 import * as React from 'react'
-import { Button, Container, Navbar } from 'react-bootstrap'
+import { Button, Container, Navbar, NavDropdown } from 'react-bootstrap'
 
 import styles from './Header.module.scss'
 
@@ -9,62 +11,49 @@ export type HeaderProps = {
 }
 
 export const Header = (props: HeaderProps) => {
-  const [accountAddress, setAccountAddress] = React.useState('')
+  const { connect, disconnect, address, bankBalance, upbankBalance, network, isWalletConnected } = useWallet()
 
-  let provider
-
-  const connectButtonOnClick = async () => {
-    // @ts-ignore
-    if (typeof window.ethereum !== 'undefined') {
-      // @ts-ignore
-      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-      // @ts-ignore
-      provider = new ethers.providers.Web3Provider(window.ethereum)
-
-      setAccountAddress(account)
-    }
-  }
-
-  React.useEffect(() => {
-    const init = async () => {
-      // @ts-ignore
-      if (typeof window.ethereum !== 'undefined') {
-        const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        setAccountAddress(account)
-
-        // @ts-ignore
-        provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-
-        // force refresh page on network change
-        provider.on('network', (newNetwork, oldNetwork) => {
-          // When a Provider makes its initial connection, it emits a "network"
-          // event with a null oldNetwork along with the newNetwork. So, if the
-          // oldNetwork exists, it represents a changing network
-          if (oldNetwork) {
-            window.location.reload()
-          }
-        })
-      }
-    }
-    init()
-  }, [provider])
+  const isMainnet = network === 1
 
   return (
-    <Navbar bg="light" expand="lg" fixed="top" className={styles.navbarArea}>
-      <Container>
-        <Navbar.Brand href="/">
-          <img className={styles.logo} src="/images/upside-logo.png" alt="Upside Competition" />
-        </Navbar.Brand>
-        <Navbar.Toggle />
-        <Navbar.Collapse className="justify-content-end">
-          {accountAddress === '' && (
-            <Button onClick={connectButtonOnClick} variant="outline-secondary">
-              Connect Wallet
-            </Button>
-          )}
-          {accountAddress !== '' && <Navbar.Text>Signed in as: {accountAddress}</Navbar.Text>}
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+    <>
+      {isWalletConnected && !isMainnet && (
+        <div className={styles.warningContainer}>{`You're currently connected to ${NETWORK_NAME[
+          network
+        ]?.toUpperCase()} network`}</div>
+      )}
+      <Navbar
+        bg="light"
+        expand="lg"
+        fixed="top"
+        className={cx(styles.navbarArea, {
+          [styles.navbarInTestnet]: isWalletConnected && !isMainnet,
+        })}>
+        <Container>
+          <Navbar.Brand href="/">
+            <img className={styles.logo} src="/images/upside-logo.png" alt="Upside Competition" />
+          </Navbar.Brand>
+          <Navbar.Toggle />
+          <Navbar.Collapse className="justify-content-end">
+            {isWalletConnected ? (
+              <NavDropdown
+                title={`Connected ${address.slice(0, 5)}....${address.slice(-5)}`}
+                id="navbarScrollingDropdown">
+                <NavDropdown.Item>{`${bankBalance} BANK`}</NavDropdown.Item>
+                <NavDropdown.Item>{`${upbankBalance} upBANK`}</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item role="button" onClick={disconnect}>
+                  Disconnect
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <Button onClick={connect} variant="outline-secondary">
+                Connect Wallet
+              </Button>
+            )}
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </>
   )
 }

@@ -30,7 +30,7 @@ export const DepositForm = () => {
           setAvailableToken(ethers.utils.formatUnits(balance))
         }
       } catch (error) {
-        setErrrorMessage(error.message)
+        // Do nothing here, most likely wrong error and can't fetch the balance
       }
     }
     init()
@@ -38,6 +38,7 @@ export const DepositForm = () => {
 
   const handleMaxButtonClick = () => {
     setDepositAmount(availableToken !== '' ? parseFloat(availableToken) : 0)
+    setDepositAmountText(availableToken)
   }
 
   const [tx, setTx] = React.useState({
@@ -131,8 +132,7 @@ export const DepositForm = () => {
           onClick={handleConfirmButtonClick}
           className={styles.confirmButton}
           variant="secondary"
-          disabled={depositAmount === 0 || loading}
-        >
+          disabled={depositAmount === 0 || loading}>
           {depositAmount === 0 ? 'Enter an amount' : loading ? 'Processing...' : 'Confirm'}
         </Button>
         {successMessage !== '' && <Alert variant="success">{successMessage}</Alert>}
