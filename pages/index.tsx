@@ -2,13 +2,14 @@ import { DepositInformation, Organiser } from '@components/Competitions'
 import { UpsideButton } from '@components/Form'
 import { Layout } from '@components/layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
-import ERC20Upgradable from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC20Upgradeable.json'
+import ERC721MintableAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC721Mintable.json'
 import { ethers } from 'ethers'
 import type { NextPage } from 'next'
 import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import { ERC20_CONTRACTS, POOL_ALIASES } from 'utils/constant'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
+import { useProvider } from 'utils/hooks/useProvider'
 
 import styles from './home.module.scss'
 
@@ -21,6 +22,57 @@ const data = {
   },
 }
 
+const prizeData: Array<any> = [
+  {
+    nftImage: '/images/nft-example-1.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-1.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-1.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-1.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-1.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-1.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+]
+
 const Home: NextPage = () => {
   const [openModal, setOpenModal] = React.useState(false)
   const { data: prizeStrategyContracts, isFetched: prizeStrategyIsFetched } = usePrizeStrategyContracts()
@@ -29,15 +81,24 @@ const Home: NextPage = () => {
 
   let endDate: Date
   let totalDeposit: number
-  let prizes: Array
+  let prizes: Array<any>
   if (typeof prizeStrategyContracts !== 'undefined') {
     endDate = prizeStrategyContracts.prizePeriodEndAt
     totalDeposit = prizeStrategyContracts.totalDeposit
     prizes = prizeStrategyContracts.prizes
   }
 
-  const handleDepositButtonClick = () => {
+  const handleDepositButtonClick = async () => {
     setOpenModal(true)
+    const infuraProvider = useProvider()
+    for (let prize of prizes) {
+      const erc721Contract = new ethers.Contract(prize.address, ERC721MintableAbi, infuraProvider)
+      // const owner = await erc721Contract.tokenURI(prize.tokenIds[0])
+      const supply = await erc721Contract.totalSupply()
+      // console.log(supply)
+      // console.log(erc721Contract)
+      // console.log(prize)
+    }
   }
 
   const handleModalCloseButtonClick = () => {
@@ -53,11 +114,6 @@ const Home: NextPage = () => {
         </div>
         <Row>
           <Col>
-            <div className={styles.nftImage}>
-              <img src={data.nftImage} alt={data.nftTitle} />
-            </div>
-          </Col>
-          <Col>
             <div className={styles.container}>
               <div className={styles.title}>{data.nftTitle}</div>
               <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
@@ -67,6 +123,24 @@ const Home: NextPage = () => {
               </div>
             </div>
           </Col>
+        </Row>
+        <Row lg="3" xs="1">
+          {prizeData.map((prize: any) => {
+            return (
+              <Col>
+                <div className={styles.nftImage}>
+                  <img src={prize.nftImage} alt={prize.nftTitle} />
+                </div>
+              </Col>
+            )
+          })}
+          {/*
+          <Col>
+            <div className={styles.nftImage}>
+              <img src={data.nftImage} alt={data.nftTitle} />
+            </div>
+          </Col>
+          */}
         </Row>
       </Layout>
       <Modal show={openModal} centered onHide={handleModalCloseButtonClick}>
