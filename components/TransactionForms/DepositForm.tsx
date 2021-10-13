@@ -41,6 +41,8 @@ export const DepositForm = () => {
     setDepositAmountText(availableToken)
   }
 
+  const disableDepositButton = depositAmount === 0 || depositAmount > Number(availableToken)
+
   const [tx, setTx] = React.useState({
     inWallet: false,
     sent: false,
@@ -102,6 +104,22 @@ export const DepositForm = () => {
     }
   }, [depositAmount])
 
+  const buttonLabel = React.useMemo(() => {
+    if (loading) {
+      return 'Processing...'
+    }
+
+    if (depositAmount === 0) {
+      return 'Enter an amount'
+    }
+
+    if (depositAmount > Number(availableToken)) {
+      return 'Deposit exceeded the available token'
+    }
+
+    return 'Confirm'
+  }, [depositAmount, loading, availableToken])
+
   return (
     <>
       <Form className={styles.formContainer}>
@@ -132,8 +150,8 @@ export const DepositForm = () => {
           onClick={handleConfirmButtonClick}
           className={styles.confirmButton}
           variant="secondary"
-          disabled={depositAmount === 0 || loading}>
-          {depositAmount === 0 ? 'Enter an amount' : loading ? 'Processing...' : 'Confirm'}
+          disabled={disableDepositButton || loading}>
+          {buttonLabel}
         </Button>
         {successMessage !== '' && <Alert variant="success">{successMessage}</Alert>}
         {errorMessage !== '' && <Alert variant="danger">{errorMessage}</Alert>}
