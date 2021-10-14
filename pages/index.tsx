@@ -115,25 +115,16 @@ const Home: NextPage = () => {
           <h3 className={styles.mainHeading}>BanklessDAO NFT Giveaways</h3>
         </div>
         <Row>
-        {/*
-          <Col xs={12} lg={6}>
-            <div className={styles.nftImage}>
-              <img src={data.nftImage} alt={data.nftTitle} />
+          <div className={styles.container}>
+            <div className={styles.title}>{data.nftTitle}</div>
+            <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
+            <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
+            <div className={styles.buttonContainer}>
+              <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
+                Deposit / Withdraw
+              </UpsideButton>
             </div>
-          </Col>
-          */}
-          <Col xs={12} lg={6}>
-            <div className={styles.container}>
-              <div className={styles.title}>{data.nftTitle}</div>
-              <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
-              <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
-              <div className={styles.buttonContainer}>
-                <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
-                  Deposit / Withdraw
-                </UpsideButton>
-              </div>
-            </div>
-          </Col>
+          </div>
         </Row>
         <Row lg="3" xs="1">
           {prizeData.map((prize: any) => {
@@ -145,13 +136,6 @@ const Home: NextPage = () => {
               </Col>
             )
           })}
-          {/*
-          <Col>
-            <div className={styles.nftImage}>
-              <img src={data.nftImage} alt={data.nftTitle} />
-            </div>
-          </Col>
-          */}
         </Row>
       </Layout>
       <Modal show={openModal} centered onHide={handleModalCloseButtonClick}>
