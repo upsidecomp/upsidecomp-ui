@@ -2,14 +2,13 @@ import { DepositInformation, Organiser } from '@components/Competitions'
 import { UpsideButton } from '@components/Form'
 import { Layout } from '@components/layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
+import { useWallet } from '@hooks/useWallet'
 import ERC721MintableAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC721Mintable.json'
 import { ethers } from 'ethers'
-import { useWallet } from '@hooks/useWallet'
 import type { NextPage } from 'next'
 import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
-import { useProvider } from 'utils/hooks/useProvider'
 
 import styles from './home.module.scss'
 
@@ -90,21 +89,12 @@ const Home: NextPage = () => {
     totalDeposit = Number(prizeStrategyContracts.totalDeposit)
   }
 
-  const handleDepositButtonClick = async () => {
+  const handleDepositButtonClick = () => {
     setOpenModal(true)
-    const infuraProvider = useProvider()
-    for (let prize of prizes) {
-      const erc721Contract = new ethers.Contract(prize.address, ERC721MintableAbi, infuraProvider)
-      // const owner = await erc721Contract.tokenURI(prize.tokenIds[0])
-      const supply = await erc721Contract.totalSupply()
-      // console.log(supply)
-      // console.log(erc721Contract)
-      // console.log(prize)
-    }
   }
 
   const handleModalCloseButtonClick = () => {
-    setOpenModal(false)
+     setOpenModal(false)
   }
 
   return (
@@ -127,9 +117,9 @@ const Home: NextPage = () => {
           </div>
         </Row>
         <Row lg="3" xs="1">
-          {prizeData.map((prize: any) => {
+          {prizeData.map((prize: any, index: number) => {
             return (
-              <Col>
+              <Col key={index}>
                 <div className={styles.nftImage}>
                   <img src={prize.nftImage} alt={prize.nftTitle} />
                 </div>
