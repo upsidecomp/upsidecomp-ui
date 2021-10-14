@@ -8,6 +8,7 @@ import { ethers } from 'ethers'
 import type { NextPage } from 'next'
 import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
+import Card from 'react-bootstrap/Card'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
 
 import styles from './home.module.scss'
@@ -94,7 +95,7 @@ const Home: NextPage = () => {
   }
 
   const handleModalCloseButtonClick = () => {
-     setOpenModal(false)
+    setOpenModal(false)
   }
 
   return (
@@ -120,9 +121,15 @@ const Home: NextPage = () => {
           {prizeData.map((prize: any, index: number) => {
             return (
               <Col key={index}>
-                <div className={styles.nftImage}>
-                  <img src={prize.nftImage} alt={prize.nftTitle} />
-                </div>
+                <Card className={styles.card}>
+                  <Card.Img variant="top" src={prize.nftImage}></Card.Img>
+                  <Card.Title className={styles.cardTitle} >{prize.nftTitle}</Card.Title>
+                  {/*
+                  <div className={styles.nftImage}>
+                    <img src={prize.nftImage} alt={prize.nftTitle} />
+                  </div>
+                  */}
+                </Card>
               </Col>
             )
           })}
