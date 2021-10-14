@@ -42,7 +42,6 @@ const _fetchPrizeStrategyData = async (
   const { prizeStrategyData: firstRequestData } = await batch(provider, ...firstRequest)
 
   let prizes = []
-  console.log(firstRequestData['currentPrizeAddresses'][0])
   if (firstRequestData['currentPrizeAddresses'][0].length > 0) {
     // second
     const prizeAddresses = firstRequestData['currentPrizeAddresses'][0]
@@ -69,8 +68,6 @@ const _fetchPrizeStrategyData = async (
     totalDeposit: Number(ethers.utils.formatUnits(balance)).toFixed(2),
     prizes: prizes,
   }
-
-  console.log(data)
 
   return {
     ...data,
