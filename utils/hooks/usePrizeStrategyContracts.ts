@@ -37,23 +37,27 @@ const _fetchPrizeStrategyData = async (
   // first
   const firstRequest = []
   const prizeStrategyContract = contract('prizeStrategyData', prizeStrategyAbi, prizeStrategyAddress)
-  firstRequest.push(
-    prizeStrategyContract
-      .prizePeriodEndAt()
-      .prizePool()
-      .currentPrizeAddresses()
-  )
+  firstRequest.push(prizeStrategyContract.prizePeriodEndAt().prizePool().currentPrizeAddresses())
 
   const { prizeStrategyData: firstRequestData } = await batch(provider, ...firstRequest)
 
-  // second
-  const prizeAddresses = firstRequestData['currentPrizeAddresses'][0]
-  const secondRequest = []
-  secondRequest.push(
-    prizeStrategyContract
-      .currentPrizeTokenIds(prizeAddresses[0]) // only queries a single prize address token ids
-  )
-  const { prizeStrategyData: secondRequestData } = await batch(provider, ...secondRequest)
+  let prizes = []
+  if (firstRequestData['currentPrizeAddresses'][0].length > 0) {
+    // second
+    const prizeAddresses = firstRequestData['currentPrizeAddresses'][0]
+    const secondRequest = []
+    secondRequest.push(
+      prizeStrategyContract.currentPrizeTokenIds(prizeAddresses[0]), // only queries a single prize address token ids
+    )
+    const { prizeStrategyData: secondRequestData } = await batch(provider, ...secondRequest)
+
+    prizes.push({
+      address: prizeAddresses[0],
+      tokenIds: secondRequestData['currentPrizeTokenIds'][0].map(bn => {
+        return bn.toNumber()
+      }),
+    })
+  }
 
   // bank
   const bankContract = new ethers.Contract(ERC20_CONTRACTS.bank, ERC20Upgradable, provider)
@@ -62,12 +66,7 @@ const _fetchPrizeStrategyData = async (
   const data: any = {
     prizePeriodEndAt: new Date(firstRequestData['prizePeriodEndAt'][0].toNumber() * 1000),
     totalDeposit: Number(ethers.utils.formatUnits(balance)).toFixed(2),
-    prizes: [{
-      address: prizeAddresses[0],
-      tokenIds: secondRequestData["currentPrizeTokenIds"][0].map((bn) => {
-        return bn.toNumber()
-      })
-    }]
+    prizes: prizes,
   }
 
   return {
