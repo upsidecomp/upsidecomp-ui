@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 
-export const useProvider = () => {
-  return new ethers.providers.InfuraProvider('rinkeby', process.env.NEXT_JS_INFURA_ID)
+// TODO: change the default value to be homestead once we have launch in mainnet
+export const useProvider = (networkName = 'rinkeby') => {
+  return new ethers.providers.InfuraProvider(networkName, process.env.NEXT_JS_INFURA_ID)
 }

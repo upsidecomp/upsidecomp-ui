@@ -4,10 +4,10 @@ import { Layout } from '@components/layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
 import ERC721MintableAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC721Mintable.json'
 import { ethers } from 'ethers'
+import { useWallet } from '@hooks/useWallet'
 import type { NextPage } from 'next'
 import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
-import { ERC20_CONTRACTS, POOL_ALIASES } from 'utils/constant'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
 import { useProvider } from 'utils/hooks/useProvider'
 
@@ -74,6 +74,7 @@ const prizeData: Array<any> = [
 ]
 
 const Home: NextPage = () => {
+  const { isWalletConnected } = useWallet()
   const [openModal, setOpenModal] = React.useState(false)
   const { data: prizeStrategyContracts, isFetched: prizeStrategyIsFetched } = usePrizeStrategyContracts()
 
@@ -86,6 +87,7 @@ const Home: NextPage = () => {
     endDate = prizeStrategyContracts.prizePeriodEndAt
     totalDeposit = prizeStrategyContracts.totalDeposit
     prizes = prizeStrategyContracts.prizes
+    totalDeposit = Number(prizeStrategyContracts.totalDeposit)
   }
 
   const handleDepositButtonClick = async () => {
@@ -113,13 +115,22 @@ const Home: NextPage = () => {
           <h3 className={styles.mainHeading}>BanklessDAO NFT Giveaways</h3>
         </div>
         <Row>
-          <Col>
+        {/*
+          <Col xs={12} lg={6}>
+            <div className={styles.nftImage}>
+              <img src={data.nftImage} alt={data.nftTitle} />
+            </div>
+          </Col>
+          */}
+          <Col xs={12} lg={6}>
             <div className={styles.container}>
               <div className={styles.title}>{data.nftTitle}</div>
               <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
               <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
               <div className={styles.buttonContainer}>
-                <UpsideButton onClick={handleDepositButtonClick}>Deposit / Withdraw</UpsideButton>
+                <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
+                  Deposit / Withdraw
+                </UpsideButton>
               </div>
             </div>
           </Col>

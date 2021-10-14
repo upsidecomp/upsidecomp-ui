@@ -23,7 +23,7 @@
 }
 
 .nftImage {
-  padding: 0 8em 8em;
+  padding: 0 3em 1em;
   img {
     width: 100%;
   }
@@ -38,7 +38,7 @@
 
 @include media-breakpoint-only(md) {
   .nftImage {
-    padding: 0 4em 8em;
+    padding: 0;
     img {
       width: 100%;
     }
