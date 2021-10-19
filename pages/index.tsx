@@ -10,6 +10,8 @@ import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import Card from 'react-bootstrap/Card'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
+import { useProvider } from 'utils/hooks/useProvider'
+import Image from 'next/image'
 
 import styles from './home.module.scss'
 
@@ -24,7 +26,7 @@ const data = {
 
 const prizeData: Array<any> = [
   {
-    nftImage: '/images/nft-example-1.png',
+    nftImage: '/images/nft-example-2.png',
     nftTitle: 'Bored Ape Yatch Club #3651',
     organiser: {
       avatarUrl: '/images/bankless-dao-logo.svg',
@@ -40,7 +42,7 @@ const prizeData: Array<any> = [
     },
   },
   {
-    nftImage: '/images/nft-example-1.png',
+    nftImage: '/images/nft-example-2.png',
     nftTitle: 'Bored Ape Yatch Club #3651',
     organiser: {
       avatarUrl: '/images/bankless-dao-logo.svg',
@@ -56,7 +58,7 @@ const prizeData: Array<any> = [
     },
   },
   {
-    nftImage: '/images/nft-example-1.png',
+    nftImage: '/images/nft-example-2.png',
     nftTitle: 'Bored Ape Yatch Club #3651',
     organiser: {
       avatarUrl: '/images/bankless-dao-logo.svg',
@@ -77,8 +79,8 @@ const Home: NextPage = () => {
   const { isWalletConnected } = useWallet()
   const [openModal, setOpenModal] = React.useState(false)
   const { data: prizeStrategyContracts, isFetched: prizeStrategyIsFetched } = usePrizeStrategyContracts()
-
-  if (!prizeStrategyIsFetched) return null
+  const infuraProvider = useProvider()
+  const [tokenUri, setTokenUri] = React.useState('')
 
   let endDate: Date
   let totalDeposit: number
@@ -90,6 +92,22 @@ const Home: NextPage = () => {
     totalDeposit = Number(prizeStrategyContracts.totalDeposit)
   }
 
+  React.useEffect(() => {
+    const fetchTokenUri = async () => {
+      if (typeof prizes !== 'undefined') {
+        const erc721Contract = new ethers.Contract(prizes[0].address, ERC721MintableAbi, infuraProvider)
+        const tokenUri = await erc721Contract.ownerOf(prizes[0].tokenIds[0])
+        // setTokenUri(tokenUri)
+        console.log(tokenUri)
+        console.log(erc721Contract)
+      }
+    }
+    fetchTokenUri()
+  }, [])
+
+  console.log(prizeStrategyContracts)
+  console.log(prizes)
+
   const handleDepositButtonClick = () => {
     setOpenModal(true)
   }
@@ -97,6 +115,8 @@ const Home: NextPage = () => {
   const handleModalCloseButtonClick = () => {
     setOpenModal(false)
   }
+
+  if (!prizeStrategyIsFetched) return null
 
   return (
     <>
@@ -122,8 +142,15 @@ const Home: NextPage = () => {
             return (
               <Col key={index}>
                 <Card className={styles.card}>
-                  <Card.Img variant="top" src={prize.nftImage}></Card.Img>
-                  <Card.Title className={styles.cardTitle} >{prize.nftTitle}</Card.Title>
+                  <Card.Img
+                    as={Image}
+                    variant="top"
+                    src={prize.nftImage}
+                    width={600}
+                    height={600}
+                    layout="responsive"
+                  />
+                  <Card.Title className={styles.cardTitle}>{prize.nftTitle}</Card.Title>
                   {/*
                   <div className={styles.nftImage}>
                     <img src={prize.nftImage} alt={prize.nftTitle} />
