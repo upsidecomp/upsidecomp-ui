@@ -142,7 +142,7 @@ const Home: NextPage = () => {
             return (
               <Col key={index} >
                 <Card className={styles.card}>
-                  <Image src={prize.nftImage} width={320} height={320} />
+                  <Image src={prize.nftImage} width={320} height={320} className={styles.nftImage} />
                   <Card.Title className={styles.cardTitle}>{prize.nftTitle}</Card.Title>
                   {/*
                   <div className={styles.nftImage}>

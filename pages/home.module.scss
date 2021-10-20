@@ -27,6 +27,7 @@
   img {
     width: 100%;
   }
+  border-radius: 16px
 }
 
 .container {
@@ -78,9 +79,11 @@
   margin-bottom: 1rem;
   width: 320px;
   height: 320px;
+  border-radius: 16px;
 }
 
 .cardTitle {
+  margin: auto;
   margin-top: 0.5rem;
-  margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
 }
