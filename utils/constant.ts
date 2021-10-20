@@ -47,6 +47,7 @@ export const NO_REFETCH_QUERY_OPTIONS = Object.freeze({
 export const QUERY_KEYS = {
   fetchPoolData: 'fetchPoolData',
   fetchPrizeStrategyData: 'fetchPrizeStrategyData',
+  fetchTokenMetadata: 'fetchTokenMetadata'
 }
 
 export const ERC20_CONTRACTS = {
