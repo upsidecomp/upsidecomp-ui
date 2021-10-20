@@ -73,7 +73,11 @@
 }
 
 .card {
-  margin: 1rem
+  margin: auto;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 320px;
+  height: 320px;
 }
 
 .cardTitle {

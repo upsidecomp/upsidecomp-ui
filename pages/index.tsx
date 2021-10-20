@@ -140,16 +140,9 @@ const Home: NextPage = () => {
         <Row lg="3" xs="1">
           {prizeData.map((prize: any, index: number) => {
             return (
-              <Col key={index}>
+              <Col key={index} >
                 <Card className={styles.card}>
-                  <Card.Img
-                    as={Image}
-                    variant="top"
-                    src={prize.nftImage}
-                    width={600}
-                    height={600}
-                    layout="responsive"
-                  />
+                  <Image src={prize.nftImage} width={320} height={320} />
                   <Card.Title className={styles.cardTitle}>{prize.nftTitle}</Card.Title>
                   {/*
                   <div className={styles.nftImage}>
