@@ -1,14 +1,15 @@
 import { DepositInformation, Organiser } from '@components/Competitions'
 import { UpsideButton } from '@components/Form'
-import { Layout } from '@components/Layout/Layout'
+import { Layout } from '@components/layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
 import { useWallet } from '@hooks/useWallet'
 import type { NextPage } from 'next'
+import Image from 'next/image'
 import * as React from 'react'
-import { Container, Button, Col, Modal, Row } from 'react-bootstrap'
+import { Button, Col, Container, Modal, Row } from 'react-bootstrap'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
+
 import styles from './home.module.scss'
-import Image from "next/image"
 
 const data = {
   nftImage: '/images/nft-example-1.png',
@@ -47,7 +48,9 @@ const Home: NextPage = () => {
         <div className={styles.bannerContainer}>
           <h4 className={styles.subHeading}>Win NFT Prizes with $BANK</h4>
           <h3 className={styles.mainHeading}>BanklessDAO NFT Giveaways</h3>
-          <Button href="https://metaversal.banklesshq.com/" variant="light">Open Newsletter</Button>
+          <Button href="https://metaversal.banklesshq.com/" variant="light">
+            Open Newsletter
+          </Button>
         </div>
         <div className={styles.bodyContainer}>
           <Container fluid="xxl">
