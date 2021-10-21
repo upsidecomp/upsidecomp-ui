@@ -3,6 +3,7 @@ import { NETWORK_NAME } from '@utils/constant'
 import cx from 'classnames'
 import * as React from 'react'
 import { Button, Container, Navbar, NavDropdown } from 'react-bootstrap'
+import Image from "next/image"
 
 import styles from './Header.module.scss'
 
@@ -18,9 +19,13 @@ export const Header = (props: HeaderProps) => {
   return (
     <>
       {isWalletConnected && !isMainnet && (
-        <div className={styles.warningContainer}>{`You're currently connected to ${NETWORK_NAME[
-          network
-        ]?.toUpperCase()} network`}</div>
+        <div className={styles.warningContainer}>
+          <small>
+            {`You're currently connected to ${NETWORK_NAME[
+              network
+            ] ?.toUpperCase()} network`}
+          </small>
+        </div>
       )}
       <Navbar
         bg="light"
@@ -31,7 +36,7 @@ export const Header = (props: HeaderProps) => {
         })}>
         <Container>
           <Navbar.Brand href="/">
-            <img className={styles.logo} src="/images/upside-logo.png" alt="Upside Competition" />
+            <Image width="40px" height="51.34px" src="/images/Upside_U_Red.png" alt="Upside Competition" />
           </Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
@@ -47,10 +52,10 @@ export const Header = (props: HeaderProps) => {
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
-              <Button onClick={connect} variant="outline-secondary">
-                Connect Wallet
-              </Button>
-            )}
+                <Button onClick={connect} variant="outline-secondary">
+                  Connect Wallet
+                </Button>
+              )}
           </Navbar.Collapse>
         </Container>
       </Navbar>

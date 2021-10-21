@@ -1,18 +1,18 @@
 import { DepositInformation, Organiser } from '@components/Competitions'
 import { UpsideButton } from '@components/Form'
-import { Layout } from '@components/layout/Layout'
+import { Layout } from '@components/Layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
 import { useWallet } from '@hooks/useWallet'
 import type { NextPage } from 'next'
 import * as React from 'react'
-import { Col, Modal, Row } from 'react-bootstrap'
+import { Container, Button, Col, Modal, Row } from 'react-bootstrap'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
-
 import styles from './home.module.scss'
+import Image from "next/image"
 
 const data = {
   nftImage: '/images/nft-example-1.png',
-  nftTitle: 'Bored Ape Yatch Club #3651',
+  nftTitle: 'Bored Ape Yacht Club #3651',
   organiser: {
     avatarUrl: '/images/bankless-dao-logo.svg',
     name: 'BanklessDAO',
@@ -47,26 +47,33 @@ const Home: NextPage = () => {
         <div className={styles.bannerContainer}>
           <h4 className={styles.subHeading}>Win NFT Prizes with $BANK</h4>
           <h3 className={styles.mainHeading}>BanklessDAO NFT Giveaways</h3>
+          <Button href="https://metaversal.banklesshq.com/" variant="light">Open Newsletter</Button>
         </div>
-        <Row>
-          <Col xs={12} lg={6}>
-            <div className={styles.nftImage}>
-              <img src={data.nftImage} alt={data.nftTitle} />
-            </div>
-          </Col>
-          <Col xs={12} lg={6}>
-            <div className={styles.container}>
-              <div className={styles.title}>{data.nftTitle}</div>
-              <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
-              <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
-              <div className={styles.buttonContainer}>
-                <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
-                  Deposit / Withdraw
-                </UpsideButton>
-              </div>
-            </div>
-          </Col>
-        </Row>
+        <div className={styles.bodyContainer}>
+          <Container fluid="xxl">
+            <Row>
+              <Col xs={12} lg={7}>
+                <div className={styles.nftImage}>
+                  <Image className="rounded" width="750" height="750" src={data.nftImage} alt={data.nftTitle} />
+                </div>
+              </Col>
+              <Col xs={12} lg={5}>
+                <div className={styles.outerContainer}>
+                  <div className={styles.container}>
+                    <span className={styles.title}>{data.nftTitle}</span>
+                    <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
+                    <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
+                    <div className={styles.buttonContainer}>
+                      <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
+                        Deposit / Withdraw
+                      </UpsideButton>
+                    </div>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </Container>
+        </div>
       </Layout>
       <Modal show={openModal} centered onHide={handleModalCloseButtonClick}>
         <Modal.Header closeButton={true}>

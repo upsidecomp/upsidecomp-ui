@@ -3,10 +3,16 @@
 @import '~bootstrap/scss/mixins';
 
 .bannerContainer {
+  margin-top: 8em;
+  margin-bottom: 3em;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 3.5em;
+}
+
+.bodyContainer {
+    margin-bottom: 10em;
 }
 
 .subHeading {
@@ -20,27 +26,60 @@
 .mainHeading {
   font-size: 2em;
   font-weight: 700;
+  margin-bottom: 1em;
 }
 
 .nftImage {
-  padding: 0 3em 1em;
-  img {
-    width: 100%;
-  }
+  padding: 0 1em 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nftImageInternal {
+  border: 2px solid #E6E8EC;
+}
+
+.outerContainer {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  height: 100%
 }
 
 .container {
   width: 400px;
+  align-items: stretch;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.containerInternal {
+  vertical-align: middle;
   display: flex;
   flex-direction: column;
 }
 
 @include media-breakpoint-only(md) {
+  .bannerContainer {
+    margin-bottom: 0;
+  }
+
+  .outerContainer {
+    margin-top: 1em;
+  }
+
+  .container {
+    width: 500px;
+  }
+
+  .title {
+    width: auto;
+  }
+
   .nftImage {
-    padding: 0;
-    img {
-      width: 100%;
-    }
+    padding: 5em;
   }
 }
 
