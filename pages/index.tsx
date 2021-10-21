@@ -3,10 +3,15 @@ import { UpsideButton } from '@components/Form'
 import { Layout } from '@components/layout/Layout'
 import { TransactionForm } from '@components/TransactionForms'
 import { useWallet } from '@hooks/useWallet'
+import ERC721MintableAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC721Mintable.json'
+import { ethers } from 'ethers'
 import type { NextPage } from 'next'
 import * as React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
+import Card from 'react-bootstrap/Card'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
+import { useProvider } from 'utils/hooks/useProvider'
+import Image from 'next/image'
 
 import styles from './home.module.scss'
 
@@ -19,19 +24,89 @@ const data = {
   },
 }
 
+const prizeData: Array<any> = [
+  {
+    nftImage: '/images/nft-example-2.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-1.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-2.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-1.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-2.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+  {
+    nftImage: '/images/nft-example-1.png',
+    nftTitle: 'Bored Ape Yatch Club #3651',
+    organiser: {
+      avatarUrl: '/images/bankless-dao-logo.svg',
+      name: 'BanklessDAO',
+    },
+  },
+]
+
 const Home: NextPage = () => {
   const { isWalletConnected } = useWallet()
   const [openModal, setOpenModal] = React.useState(false)
   const { data: prizeStrategyContracts, isFetched: prizeStrategyIsFetched } = usePrizeStrategyContracts()
-
-  if (!prizeStrategyIsFetched) return null
+  const infuraProvider = useProvider()
+  const [tokenUri, setTokenUri] = React.useState('')
 
   let endDate: Date
   let totalDeposit: number
+  let prizes: Array<any>
   if (typeof prizeStrategyContracts !== 'undefined') {
     endDate = prizeStrategyContracts.prizePeriodEndAt
+    totalDeposit = prizeStrategyContracts.totalDeposit
+    prizes = prizeStrategyContracts.prizes
     totalDeposit = Number(prizeStrategyContracts.totalDeposit)
   }
+
+  React.useEffect(() => {
+    const fetchTokenUri = async () => {
+      if (typeof prizes !== 'undefined') {
+        const erc721Contract = new ethers.Contract(prizes[0].address, ERC721MintableAbi, infuraProvider)
+        const tokenUri = await erc721Contract.ownerOf(prizes[0].tokenIds[0])
+        // setTokenUri(tokenUri)
+        console.log(tokenUri)
+        console.log(erc721Contract)
+      }
+    }
+    fetchTokenUri()
+  }, [])
+
+  console.log(prizeStrategyContracts)
+  console.log(prizes)
 
   const handleDepositButtonClick = () => {
     setOpenModal(true)
@@ -41,6 +116,8 @@ const Home: NextPage = () => {
     setOpenModal(false)
   }
 
+  if (!prizeStrategyIsFetched) return null
+
   return (
     <>
       <Layout>
@@ -49,23 +126,33 @@ const Home: NextPage = () => {
           <h3 className={styles.mainHeading}>BanklessDAO NFT Giveaways</h3>
         </div>
         <Row>
-          <Col xs={12} lg={6}>
-            <div className={styles.nftImage}>
-              <img src={data.nftImage} alt={data.nftTitle} />
+          <div className={styles.container}>
+            <div className={styles.title}>{data.nftTitle}</div>
+            <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
+            <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
+            <div className={styles.buttonContainer}>
+              <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
+                Deposit / Withdraw
+              </UpsideButton>
             </div>
-          </Col>
-          <Col xs={12} lg={6}>
-            <div className={styles.container}>
-              <div className={styles.title}>{data.nftTitle}</div>
-              <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
-              <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
-              <div className={styles.buttonContainer}>
-                <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
-                  Deposit / Withdraw
-                </UpsideButton>
-              </div>
-            </div>
-          </Col>
+          </div>
+        </Row>
+        <Row lg="3" xs="1">
+          {prizeData.map((prize: any, index: number) => {
+            return (
+              <Col key={index} >
+                <Card className={styles.card}>
+                  <Image src={prize.nftImage} width={320} height={320} className={styles.nftImage} />
+                  <Card.Title className={styles.cardTitle}>{prize.nftTitle}</Card.Title>
+                  {/*
+                  <div className={styles.nftImage}>
+                    <img src={prize.nftImage} alt={prize.nftTitle} />
+                  </div>
+                  */}
+                </Card>
+              </Col>
+            )
+          })}
         </Row>
       </Layout>
       <Modal show={openModal} centered onHide={handleModalCloseButtonClick}>
