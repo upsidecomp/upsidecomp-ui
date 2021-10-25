@@ -6,18 +6,18 @@ import { useWallet } from '@hooks/useWallet'
 import ERC721MintableAbi from '@upsidecomp/upsidecomp-contracts-bankless-core/abis/ERC721Mintable.json'
 import { ethers } from 'ethers'
 import type { NextPage } from 'next'
+import Image from 'next/image'
 import * as React from 'react'
-import { Col, Modal, Row } from 'react-bootstrap'
+import { Button, Container, Col, Modal, Row } from 'react-bootstrap'
 import Card from 'react-bootstrap/Card'
 import { usePrizeStrategyContracts } from 'utils/hooks/usePrizeStrategyContracts'
 import { useProvider } from 'utils/hooks/useProvider'
-import Image from 'next/image'
 
 import styles from './home.module.scss'
 
 const data = {
   nftImage: '/images/nft-example-1.png',
-  nftTitle: 'Bored Ape Yatch Club #3651',
+  nftTitle: 'Bored Ape Yacht Club #3651',
   organiser: {
     avatarUrl: '/images/bankless-dao-logo.svg',
     name: 'BanklessDAO',
@@ -124,7 +124,37 @@ const Home: NextPage = () => {
         <div className={styles.bannerContainer}>
           <h4 className={styles.subHeading}>Win NFT Prizes with $BANK</h4>
           <h3 className={styles.mainHeading}>BanklessDAO NFT Giveaways</h3>
+          <Button href="https://metaversal.banklesshq.com/" variant="light">
+            Open Newsletter
+          </Button>
         </div>
+        {/*
+        <div className={styles.bodyContainer}>
+          <Container fluid="xxl">
+            <Row>
+              <Col xs={12} lg={7}>
+                <div className={styles.nftImage}>
+                  <Image className="rounded" width="750" height="750" src={data.nftImage} alt={data.nftTitle} />
+                </div>
+              </Col>
+              <Col xs={12} lg={5}>
+                <div className={styles.outerContainer}>
+                  <div className={styles.container}>
+                    <span className={styles.title}>{data.nftTitle}</span>
+                    <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
+                    <DepositInformation totalDeposit={totalDeposit} endDate={endDate} />
+                    <div className={styles.buttonContainer}>
+                      <UpsideButton disabled={!isWalletConnected} onClick={handleDepositButtonClick}>
+                        Deposit / Withdraw
+                      </UpsideButton>
+                    </div>
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </Container>
+        </div>
+        */}
         <Row>
           <div className={styles.container}>
             <div className={styles.title}>{data.nftTitle}</div>

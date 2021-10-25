@@ -149,7 +149,8 @@ export const WithdrawForm = () => {
         onClick={handleConfirmButtonClick}
         className={styles.confirmButton}
         variant="secondary"
-        disabled={disableWithdrawButton || loading}>
+        disabled={disableWithdrawButton || loading}
+      >
         {buttonLabel}
       </Button>
       {successMessage !== '' && <Alert variant="success">{successMessage}</Alert>}

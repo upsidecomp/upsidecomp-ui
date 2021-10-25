@@ -26,7 +26,8 @@ export const Layout = ({ children }: Props) => {
         <main
           className={cx(styles.mainContent, {
             [styles.inTestnet]: isWalletConnected && network !== 1,
-          })}>
+          })}
+        >
           {children}
         </main>
       </Container>

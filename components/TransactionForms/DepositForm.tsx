@@ -150,7 +150,8 @@ export const DepositForm = () => {
           onClick={handleConfirmButtonClick}
           className={styles.confirmButton}
           variant="secondary"
-          disabled={disableDepositButton || loading}>
+          disabled={disableDepositButton || loading}
+        >
           {buttonLabel}
         </Button>
         {successMessage !== '' && <Alert variant="success">{successMessage}</Alert>}
