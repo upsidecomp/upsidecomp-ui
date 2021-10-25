@@ -155,7 +155,7 @@ const Home: NextPage = () => {
           </Container>
         </div>
         */}
-        <Row>
+        <Row className={styles.row}>
           <div className={styles.container}>
             <div className={styles.title}>{data.nftTitle}</div>
             <Organiser avatarUrl={data.organiser.avatarUrl} name={data.organiser.name} />
@@ -167,7 +167,7 @@ const Home: NextPage = () => {
             </div>
           </div>
         </Row>
-        <Row lg="3" xs="1">
+        <Row lg="3" xs="1" className={styles.row}>
           {prizeData.map((prize: any, index: number) => {
             return (
               <Col key={index} >

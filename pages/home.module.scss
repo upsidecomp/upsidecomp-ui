@@ -52,6 +52,10 @@
   margin: 0 auto
 }
 
+.row {
+  justify-content: center
+}
+
 @include media-breakpoint-only(md) {
   .bannerContainer {
     margin-bottom: 0;
